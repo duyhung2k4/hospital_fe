@@ -35,7 +35,7 @@ const Home: React.FC = () => {
     }, []);
 
     return (
-        <Stack gap={0} p={36}>
+        <Stack gap={0}>
             Home
             <FormCustom
                 id="home"
