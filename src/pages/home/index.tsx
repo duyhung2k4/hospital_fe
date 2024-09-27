@@ -3,6 +3,7 @@ import FormCustom, { FormCustomField } from "@/components/form";
 import { Button, Group, Stack } from "@mantine/core";
 import { useQueryMutation } from "@/redux/api/query";
 import { FieldModel } from "@/model/field";
+import { HandleField } from "@/utils/field";
 
 
 
@@ -24,16 +25,8 @@ const Home: React.FC = () => {
         });
 
         if ("error" in result) return;
-        const fields: FormCustomField[] = ((result.data.data || []) as FieldModel[]).map(f => {
-            const field: FormCustomField = {
-                type: f.type,
-                name: f.name,
-                size: f.size,
-                data: {}
-            }
-
-            return field;
-        });
+        const data = result.data.data as FieldModel[] | undefined
+        const fields: FormCustomField[] = HandleField.convertToFieldsForGET(data || []);
         setFields(fields);
     }
 

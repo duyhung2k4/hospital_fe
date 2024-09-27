@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 import {
     TextInput, TextInputProps,
     Textarea, TextareaProps,
@@ -12,19 +12,17 @@ import { useForm } from "@mantine/form";
 
 const FormCustom: React.FC<FormCustomProps> = (props) => {
 
-    const { initalValue } = useMemo(() => {
+    const form = useForm();
+
+    useEffect(() => {
         let initalValue: Record<string, any> = {};
 
         props.fields.forEach(f => {
             initalValue[f.name] = f.data.defaultValue;
         })
 
-        return { initalValue }
+        form.setInitialValues(initalValue);
     }, [props.fields]);
-
-    const form = useForm({
-        initialValues: initalValue,
-    });
 
     const InputComponent = (payload: FormCustomField) => {
         switch (payload.type) {
@@ -41,7 +39,7 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
         }
     };
 
-    
+
 
     return (
         <>
