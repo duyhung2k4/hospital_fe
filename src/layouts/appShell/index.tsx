@@ -10,20 +10,23 @@ import classes from "./styles.module.css";
 const links: ObjectRouter[] = [
     ROUTER.HOME,
     ROUTER.DEPARTMENT,
+    ROUTER.ROOM,
     ROUTER.SCHEDULE,
+    ROUTER.FIELD,
 ]
 
 
 
 const AppshellLayout: React.FC = () => {
+    
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-
+    
     const outlet = useOutlet();
     const navigation = useNavigate();
     
-
     const pathname = window.location.pathname;
+
 
 
     return (
@@ -48,7 +51,7 @@ const AppshellLayout: React.FC = () => {
                 <AppShell.Navbar p={0}>
                     <Stack gap={8} pt={30}>
                         {links.map((l, index) => {
-                            const active = pathname === l.href;
+                            const active = pathname.includes(l.href) && (l.href !== ROUTER.HOME.href ? true : false);
                             const Icon = l.icon
                             return (
                                 <Group

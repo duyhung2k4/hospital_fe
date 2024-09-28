@@ -1,7 +1,9 @@
+import React from "react";
+
 import FormCustom, { FormCustomField } from "@/components/form";
 import { Button, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import React from "react";
+
 
 
 export type OpenModalActionProps = {
@@ -20,8 +22,42 @@ export const OpenModalAction = (props: OpenModalActionProps) => modals.openConfi
         />
     ),
     size: "lg",
+    closeOnEscape: false,
+    closeOnClickOutside: false,
+    closeButtonProps: { display: "none" },
+    cancelProps: {
+        style: {
+            padding: 0,
+        }
+    },
     labels: {
         confirm: <Button type="submit" form={props.idForm}>Xác nhận</Button>,
-        cancel: 'Hủy',
+        cancel: <Button type="submit" color="red" form={`${props.idForm}-clear`}>Hủy</Button>,
+    },
+});
+
+
+
+export type OpenModalConfirmProps = {
+    title: React.ReactNode
+    text: React.ReactNode
+    idForm: string
+    cb: () => void
+}
+export const OpenModalConfirm = (props: OpenModalConfirmProps) => modals.openConfirmModal({
+    title: <Text>{props.title}</Text>,
+    children: <form id={props.idForm} onSubmit={props.cb}>{props.text}</form>,
+    size: "md",
+    closeOnEscape: false,
+    closeOnClickOutside: false,
+    closeButtonProps: { display: "none" },
+    cancelProps: {
+        style: {
+            padding: 0,
+        }
+    },
+    labels: {
+        confirm: <Button type="submit" form={props.idForm}>Xác nhận</Button>,
+        cancel: <Button color="red">Hủy</Button>,
     },
 });

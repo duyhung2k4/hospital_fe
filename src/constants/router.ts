@@ -3,7 +3,9 @@ import {
     IconLayoutDashboard, 
     IconProps, 
     IconHeartbeat,
-    IconCalendarMonth
+    IconCalendarMonth,
+    IconBed,
+    IconChartInfographic
 } from "@tabler/icons-react"
 
 export type ObjectRouter = {
@@ -17,6 +19,9 @@ export type FieldRouter =
     | "HOME"
     | "DEPARTMENT"
     | "SCHEDULE"
+    | "ROOM"
+    | "FIELD"
+    | "FIELD_DETAIL"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -35,5 +40,21 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         type: "protected",
         name: "Lịch khám",
         icon: IconCalendarMonth
+    },
+    ROOM: {
+        href: "/room",
+        type: "protected",
+        name: "Phòng khám",
+        icon: IconBed
+    },
+    FIELD: {
+        href: "/field",
+        type: "protected",
+        name: "Thông số khám bệnh",
+        icon: IconChartInfographic
+    },
+    FIELD_DETAIL: {
+        href: "/field/:id",
+        type: "protected",
     }
 }
