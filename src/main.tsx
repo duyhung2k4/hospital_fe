@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client'
 import { MantineProvider } from '@mantine/core'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { ModalsProvider } from "@mantine/modals";
 
 import './index.css'
 import '@mantine/core/styles.css';
@@ -15,12 +16,14 @@ import '@mantine/core/styles.css';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <Provider store={store}>
         <MantineProvider theme={themeOverride}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
+            <ModalsProvider>
+                <Provider store={store}>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </Provider>
+            </ModalsProvider>
         </MantineProvider>
-        </Provider>
     </StrictMode>,
 )

@@ -1,6 +1,9 @@
 import { CSSProperties, createTheme } from "@mantine/core";
 
 const themeOverride = createTheme({
+    colors: {
+        blue: ["#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3", "#177AE3"],
+    },
     components: {
         Input: {
             styles: {
@@ -20,12 +23,12 @@ const themeOverride = createTheme({
         Button: {
             styles: {
                 root: {
-                    borderRadius: 8,
-                    //   backgroundColor: "#000",
+                    borderRadius: 16,
                 } as CSSProperties
             }
         },
     },
+    primaryColor: "blue"
 });
 
 export default themeOverride;

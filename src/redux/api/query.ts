@@ -27,3 +27,12 @@ export type UseQueryMutationPayload = {
     model: string
     data: QueryReq
 }
+
+export const DEFAULT_QUERY_DATA: QueryReq = {
+    data: {},
+    method: "get",
+    condition: "",
+    args: [],
+    preload: [],
+    omit: {},
+}
