@@ -1,20 +1,38 @@
 import React, { useEffect, useMemo, useState } from "react";
 import FormCustom, { FormCustomField } from "@/components/form";
 import EditorCustom from "@/components/editor";
+import dayjs from "dayjs";
 
-import { Avatar, Button, Grid, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Button, Grid, Group, Loader, Stack, Text } from "@mantine/core";
 import { IconMapPin, IconPhone } from "@tabler/icons-react";
 import { DepartmentModel } from "@/model/department";
 import { DEFAULT_QUERY_DATA, useQueryMutation } from "@/redux/api/query";
+import { useCallMedicalFileQuery, usePullMedicalFileMutation, useTransitMutation } from "@/redux/api/schedule";
 
 import classes from "./style.module.css";
+import { TransitReq } from "@/dto/request/schedule";
 
 
 
 const Clinical: React.FC = () => {
     const [departments, setDepartments] = useState<DepartmentModel[]>([]);
+    const [resultEdittor, setResultEditor] = useState<string>("");
 
-    const [query] = useQueryMutation();
+    const [query, { isLoading: loadingQuery }] = useQueryMutation();
+    const [create] = useTransitMutation();
+
+    const {
+        data: medicalFileData,
+        refetch: medicalFileRefetch,
+    } = useCallMedicalFileQuery(null);
+
+    const [pull, { isLoading: loadingPull }] = usePullMedicalFileMutation();
+
+
+
+    const schedule = useMemo(() => {
+        return medicalFileData?.data
+    }, [medicalFileData]);
 
     const { fields } = useMemo(() => {
         const fields: FormCustomField[] = [
@@ -25,8 +43,8 @@ const Clinical: React.FC = () => {
                 data: {
                     label: "Mã hồ sơ",
                     readOnly: true,
-                    value: "0123456789",
-                    defaultValue: "0123456789"
+                    value: schedule?.code || "",
+                    defaultValue: schedule?.code || ""
                 }
             },
             {
@@ -41,7 +59,7 @@ const Clinical: React.FC = () => {
         ]
 
         return { fields }
-    }, [departments]);
+    }, [departments, schedule]);
 
     const handleGetDepartments = async () => {
         const result = await query({
@@ -58,14 +76,43 @@ const Clinical: React.FC = () => {
     }
 
     const handleSubmit = async (values: Record<string, any>) => {
-        console.log(values);
+        if(!schedule) return;
+        const payload: TransitReq = {
+            description: resultEdittor,
+            departmentIds: (values?.departments as string[] || []).map(id => Number(id)),
+            scheduleId: schedule.ID,
+        }
+
+        const result = await create(payload);
+        if("error" in result) return;
+    }
+
+    const handlePull = async () => {
+        const result = await pull(null);
+        if("error" in result) return;
+        medicalFileRefetch();
     }
 
     useEffect(() => {
+        medicalFileRefetch();
         handleGetDepartments();
     }, []);
 
+    if(loadingQuery || loadingPull) {
+        return (
+            <Stack h={"100%"} w={"100%"} justify="center" align="center">
+                <Loader/>
+            </Stack>
+        )
+    }
 
+    if(!schedule && !loadingQuery) {
+        return (
+            <Stack h={"100%"} w={"100%"} justify="center" align="center">
+                <Button onClick={handlePull}>Lấy hồ sơ</Button>
+            </Stack>
+        )
+    }
 
     return (
         <Stack
@@ -76,17 +123,17 @@ const Clinical: React.FC = () => {
                     <Stack className={classes.info}>
                         <Group>
                             <Avatar radius="xl" size={80} />
-                            <Text style={{ fontSize: 20 }}>Nguyễn Văn A</Text>
+                            <Text style={{ fontSize: 20 }}>{schedule?.name}</Text>
                         </Group>
                         <Stack>
                             <Text fw={500} style={{ fontSize: 18 }}>Thông tin liên hệ </Text>
                             <Group>
                                 <IconPhone />
-                                <Text>0123456789</Text>
+                                <Text>{schedule?.phone}</Text>
                             </Group>
                             <Group>
                                 <IconMapPin />
-                                <Text>ABCD</Text>
+                                <Text>{schedule?.address}</Text>
                             </Group>
                         </Stack>
                     </Stack>
@@ -95,10 +142,10 @@ const Clinical: React.FC = () => {
                         <Text fw={500} style={{ fontSize: 18 }}>Thông tin chi tiết</Text>
                         <Stack gap={4}>
                             <Group>
-                                <Text>Ngày sinh:</Text> <Text>0/0/0</Text>
+                                <Text>Ngày sinh:</Text> <Text>{dayjs(schedule?.dob).format("DD/MM/YYYY")}</Text>
                             </Group>
                             <Group>
-                                <Text>Giới tính:</Text> <Text>ABC</Text>
+                                <Text>Giới tính:</Text> <Text>{schedule?.gender}</Text>
                             </Group>
                         </Stack>
                     </Stack>
@@ -114,7 +161,9 @@ const Clinical: React.FC = () => {
                         />
                         <Stack gap={4} mt={36}>
                             <Text fw={500}>Mô tả / Kết luận</Text>
-                            <EditorCustom/>
+                            <EditorCustom
+                                onChange={e => setResultEditor(e)}
+                            />
                         </Stack>
                     </Stack>
                 </Grid.Col>
@@ -122,7 +171,7 @@ const Clinical: React.FC = () => {
 
             <Group className={classes.option} justify="end">
                 <Button color="red">Hủy</Button>
-                <Button color="green" type="submit" form="clinical">Chuyển tuyến</Button>
+                <Button color="green" type="submit" form="clinical">Hoàn thành</Button>
             </Group>
         </Stack>
     )

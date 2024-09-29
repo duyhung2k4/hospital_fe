@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./reducer";
 import { queryApi } from "./api/query";
+import { scheduleApi } from "./api/schedule";
 
 
 
 const middleware = [
     queryApi.middleware,
+    scheduleApi.middleware,
 ]
 
 const store = configureStore({

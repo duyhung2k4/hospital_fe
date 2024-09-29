@@ -37,7 +37,7 @@ const AppshellLayout: React.FC = () => {
                 header={{ height: 60 }}
                 navbar={{
                     width: 300,
-                    breakpoint: 'sm',
+                    breakpoint: "md",
                     collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
                 }}
                 padding="md"
