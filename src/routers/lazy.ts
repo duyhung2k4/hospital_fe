@@ -7,5 +7,7 @@ export const PageSchedule = lazy(() => import("@/pages/schedule"));
 export const PageRoom = lazy(() => import("@/pages/room"));
 export const PageField = lazy(() => import("@/pages/field"));
 export const PageFieldDetail = lazy(() => import("@/pages/field_detail"));
+export const PageClinical = lazy(() => import("@/pages/clinical"));
+export const PageSpec = lazy(() => import("@/pages/spec"));
 // other
 export const PageNotFound = lazy(() => import("@/pages/not_found"));

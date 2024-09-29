@@ -1,13 +1,21 @@
 import React, { useEffect } from "react";
+import dayjs from 'dayjs';
+
 import {
     TextInput, TextInputProps,
     Textarea, TextareaProps,
     NumberInput, NumberInputProps,
     Select, SelectProps,
+    MultiSelect, MultiSelectProps,
     TagsInput, TagsInputProps,
     Grid,
 } from "@mantine/core";
+import { DatePickerInput, DatePickerInputProps } from '@mantine/dates';
 import { useForm } from "@mantine/form";
+
+import 'dayjs/locale/vi';
+
+dayjs.locale('vi');
 
 
 
@@ -22,6 +30,12 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
             switch (f.type) {
                 case "select":
                     initalValue[f.name] = `${f.data.defaultValue}`;
+                    break;
+                case "multi_select":
+                    initalValue[f.name] = f.data.defaultSearchValue || []
+                    break;
+                case "date":
+                    initalValue[f.name] = f.data.defaultValue ? dayjs(f.data.defaultValue) : null
                     break;
                 default:
                     initalValue[f.name] = f.data.defaultValue;
@@ -41,8 +55,24 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
                 return <Textarea {...payload.data} {...form.getInputProps(payload.name)} />;
             case "number":
                 return <NumberInput {...payload.data} {...form.getInputProps(payload.name)} />;
+            case "date":
+                return (
+                    <DatePickerInput
+                        {...payload.data}
+                        {...form.getInputProps(payload.name)}
+                        locale="vi"
+                        valueFormat="DD/MM/YYYY"
+                    />
+                );
             case "tag":
                 return <TagsInput {...payload.data} {...form.getInputProps(payload.name)} />;
+            case "multi_select":
+                return (
+                    <MultiSelect
+                        {...payload.data}
+                        {...form.getInputProps(payload.name)}
+                    />
+                )
             case "select":
                 return (
                     <Select
@@ -63,12 +93,12 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
         })
 
         props.cbSubmit(values);
-        form.reset();
+        if(props.clear === undefined || props.clear === true) form.reset();
         props.fields.forEach(f => f.data.defaultValue = undefined);
     }
 
     const handleClear = () => {
-        form.reset();
+        if(props.clear === undefined || props.clear === true) form.reset();
         props.fields.forEach(f => f.data.defaultValue = undefined);
     }
 
@@ -80,7 +110,7 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
                 <Grid>
                     {
                         props.fields.map(p =>
-                            <Grid.Col key={p.name} span={p.size | 6}>
+                            <Grid.Col key={p.name} span={p.size ? p.size : 6}>
                                 {InputComponent(p)}
                             </Grid.Col>
                         )
@@ -124,15 +154,30 @@ export type FormCustomField =
         data: SelectProps
     }
     | {
+        type: "multi_select"
+        valueType?: "string" | "number"
+        name: string
+        size: number
+        data: MultiSelectProps
+    }
+    | {
         type: "tag"
         valueType?: "string" | "number"
         name: string
         size: number
         data: TagsInputProps
     }
+    | {
+        type: "date"
+        valueType?: "string" | "number"
+        name: string
+        size: number
+        data: DatePickerInputProps
+    }
 
 export type FormCustomProps = {
     id: string
     fields: FormCustomField[]
     cbSubmit: (values: Record<string, any>) => void
+    clear?: boolean
 }

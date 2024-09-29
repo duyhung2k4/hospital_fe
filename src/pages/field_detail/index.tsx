@@ -76,7 +76,7 @@ const FieldDetail: React.FC = () => {
         ]
 
         const cells: TableCRUDCellProps = {
-            "departmentId": () => {
+            departmentId: () => {
                 return <>{department && department.name}</>
             }
         }

@@ -8,6 +8,7 @@ import { DEFAULT_QUERY_DATA, useQueryMutation } from "@/redux/api/query";
 import { FormCustomField } from "@/components/form";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { SIZE } from "@/constants/size";
+import dayjs from "dayjs";
 
 
 
@@ -86,6 +87,12 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                                                     f.data = {
                                                         ...f.data,
                                                         defaultValue: item[f.name] || []
+                                                    }
+                                                    break;
+                                                case "date":
+                                                    f.data = {
+                                                        ...f.data,
+                                                        defaultValue: item[f.name] ? dayjs(item[f.name]).toDate() : null
                                                     }
                                                     break;
                                                 default:
