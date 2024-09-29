@@ -4,6 +4,7 @@ import {
     Textarea, TextareaProps,
     NumberInput, NumberInputProps,
     Select, SelectProps,
+    TagsInput, TagsInputProps,
     Grid,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -18,10 +19,13 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
         let initalValue: Record<string, any> = {};
 
         props.fields.forEach(f => {
-            if(f.type === "select") {
-                initalValue[f.name] = `${f.data.defaultValue}`;
-            } else {
-                initalValue[f.name] = f.data.defaultValue;
+            switch (f.type) {
+                case "select":
+                    initalValue[f.name] = `${f.data.defaultValue}`;
+                    break;
+                default:
+                    initalValue[f.name] = f.data.defaultValue;
+                    break;
             }
         })
 
@@ -37,6 +41,8 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
                 return <Textarea {...payload.data} {...form.getInputProps(payload.name)} />;
             case "number":
                 return <NumberInput {...payload.data} {...form.getInputProps(payload.name)} />;
+            case "tag":
+                return <TagsInput {...payload.data} {...form.getInputProps(payload.name)} />;
             case "select":
                 return (
                     <Select
@@ -45,13 +51,13 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
                     />
                 );
             default:
-                return null;
+                return <></>;
         }
     };
 
     const handleSubmit = (values: Record<string, any>) => {
         props.fields.map(f => {
-            if(f.valueType === "number") {
+            if (f.valueType === "number") {
                 values[f.name] = Number(values[f.name] || 0);
             }
         })
@@ -74,7 +80,7 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
                 <Grid>
                     {
                         props.fields.map(p =>
-                            <Grid.Col key={p.name} span={p.size}>
+                            <Grid.Col key={p.name} span={p.size | 6}>
                                 {InputComponent(p)}
                             </Grid.Col>
                         )
@@ -116,6 +122,13 @@ export type FormCustomField =
         name: string
         size: number
         data: SelectProps
+    }
+    | {
+        type: "tag"
+        valueType?: "string" | "number"
+        name: string
+        size: number
+        data: TagsInputProps
     }
 
 export type FormCustomProps = {

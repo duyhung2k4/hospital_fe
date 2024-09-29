@@ -15,11 +15,12 @@ import 'mantine-react-table/styles.css';
 
 
 export type TableCustomProps = {
-    columns: MRT_ColumnDef<Record<string, any>>[];
-    data: Record<string, any>[];
-    loading?: boolean;
-    action?: React.ReactNode;
+    columns: MRT_ColumnDef<Record<string, any>>[]
+    data: Record<string, any>[]
+    loading?: boolean
+    action?: React.ReactNode
     maxHeight?: number | string
+    hide?: string[]
 };
 
 const TableCustom: React.FC<TableCustomProps> = (props) => {
@@ -31,6 +32,11 @@ const TableCustom: React.FC<TableCustomProps> = (props) => {
         },
         state: {
             isLoading: props.loading
+        },
+        initialState: {
+            columnVisibility:
+                !props.hide ? {} :
+                    props.hide.reduce((prev, cur) => { prev[cur] = false; return prev }, {} as Record<string, boolean>)
         },
         enableStickyHeader: true,
         enableStickyFooter: true,

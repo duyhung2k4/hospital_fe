@@ -27,6 +27,13 @@ const themeOverride = createTheme({
                 } as CSSProperties
             }
         },
+        Pill: {
+            styles: {
+                root: {
+                    backgroundColor: "#FFF"
+                } as CSSProperties
+            }
+        }
     },
     primaryColor: "blue"
 });

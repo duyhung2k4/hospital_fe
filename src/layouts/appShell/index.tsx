@@ -51,7 +51,7 @@ const AppshellLayout: React.FC = () => {
                 <AppShell.Navbar p={0}>
                     <Stack gap={8} pt={30}>
                         {links.map((l, index) => {
-                            const active = pathname.includes(l.href) && (l.href !== ROUTER.HOME.href ? true : false);
+                            const active = pathname === ROUTER.HOME.href && l.href === ROUTER.HOME.href ? true : pathname.includes(l.href) && l.href !== ROUTER.HOME.href;
                             const Icon = l.icon
                             return (
                                 <Group

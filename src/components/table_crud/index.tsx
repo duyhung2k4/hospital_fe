@@ -10,15 +10,22 @@ import { MRT_ColumnDef } from "mantine-react-table";
 import { SIZE } from "@/constants/size";
 
 
+
+export type TableCRUDCellProps = Record<string, (item: Record<string, any>) => React.ReactNode>;
+
 export type TableCRUDProps = {
     model: string
+    condition?: string
+    args?: any[]
     isLoading?: boolean
+    hide?: string[]
     fields: FormCustomField[]
-    cells: Record<string, (item: Record<string, any>) => React.ReactNode>
+    cells: TableCRUDCellProps
 }
+
 const TableCRUD: React.FC<TableCRUDProps> = (props) => {
     const [query, { isLoading }] = useQueryMutation();
-    const [departments, setDepartments] = useState<Record<string, any>[]>([]);
+    const [datas, setDatas] = useState<Record<string, any>[]>([]);
 
 
 
@@ -74,9 +81,19 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                                         const item = props.cell.row.original;
                                         if (!item?.ID) return;
                                         fields.forEach((f) => {
-                                            f.data = {
-                                                ...f.data,
-                                                defaultValue: item[f.name],
+                                            switch (f.type) {
+                                                case "tag":
+                                                    f.data = {
+                                                        ...f.data,
+                                                        defaultValue: item[f.name] || []
+                                                    }
+                                                    break;
+                                                default:
+                                                    f.data = {
+                                                        ...f.data,
+                                                        defaultValue: item[f.name],
+                                                    }
+                                                    break;
                                             }
                                         })
 
@@ -99,7 +116,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
             fields,
             columns,
         };
-    }, [departments]);
+    }, [datas]);
 
 
 
@@ -110,12 +127,14 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
             data: {
                 ...DEFAULT_QUERY_DATA,
                 method: "get_all",
+                condition: props.condition || "",
+                args: props.args || [],
             }
         });
 
         if ("error" in result) return;
         const data = result.data.data as Record<string, any>[];
-        setDepartments(data || []);
+        setDatas(data || []);
     }
 
     const handleCreate = async (values: Record<string, any>) => {
@@ -131,7 +150,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
         if ("error" in result) return;
 
         const data = result.data.data as Record<string, any>;
-        setDepartments([...departments, data]);
+        setDatas([...datas, data]);
     }
 
     const handleUpdate = async (id: number, values: Record<string, any>) => {
@@ -148,7 +167,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
 
         if ("error" in result) return;
         const data = result.data.data as Record<string, any>;
-        setDepartments(departments.map(d => d.ID === data.ID ? data : d));
+        setDatas(datas.map(d => d.ID === data.ID ? data : d));
     }
 
     const handleDelete = async (id: number) => {
@@ -164,7 +183,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
         });
 
         if ("error" in result) return;
-        setDepartments(departments.filter(d => d.ID !== id));
+        setDatas(datas.filter(d => d.ID !== id));
     }
 
 
@@ -175,11 +194,13 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
     }, []);
 
 
+
     return (
         <Stack w={"100%"}>
             <TableCustom
                 columns={columns}
-                data={departments}
+                data={datas}
+                hide={props.hide}
                 loading={isLoading || props.isLoading}
                 maxHeight={`calc(100vh - ${SIZE.h_header} - ${SIZE.t_toolbar} - ${SIZE.t_header} - ${SIZE.t_footer})`}
                 action={
