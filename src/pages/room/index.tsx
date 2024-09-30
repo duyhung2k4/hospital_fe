@@ -44,6 +44,7 @@ const Room: React.FC = () => {
                         return <>{department && department.name}</>
                     }
                 }}
+                preload={["Profile"]}
                 fields={[
                     {
                         type: "text",

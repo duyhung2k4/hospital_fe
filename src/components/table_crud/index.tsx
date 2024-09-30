@@ -16,12 +16,14 @@ export type TableCRUDCellProps = Record<string, (item: Record<string, any>) => R
 
 export type TableCRUDProps = {
     model: string
-    condition?: string
-    args?: any[]
-    isLoading?: boolean
-    hide?: string[]
     fields: FormCustomField[]
     cells: TableCRUDCellProps
+    isLoading?: boolean
+    condition?: string
+    args?: any[]
+    hide?: string[]
+    preload?: string[]
+    omit?: Record<string, string[]>
 }
 
 const TableCRUD: React.FC<TableCRUDProps> = (props) => {
@@ -136,6 +138,8 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                 method: "get_all",
                 condition: props.condition || "",
                 args: props.args || [],
+                preload: props.preload || [],
+                omit: props.omit || {},
             }
         });
 
@@ -169,6 +173,8 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                 data: values,
                 condition: "id = ?",
                 args: [id],
+                preload: props.preload || [],
+                omit: props.omit || {},
             },
         });
 
