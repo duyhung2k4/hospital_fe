@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import TableCustom from "@/components/table";
+import dayjs from "dayjs";
 
 import { IconPencilMinus, IconPlus, IconReload, IconTrash } from "@tabler/icons-react";
 import { Button, Group, Stack, Tooltip } from "@mantine/core";
-import { OpenModalAction, OpenModalConfirm } from "@/utils/model";
+import { OpenModalAction, OpenModalConfirm } from "@/utils/modal";
 import { DEFAULT_QUERY_DATA, useQueryMutation } from "@/redux/api/query";
 import { FormCustomField } from "@/components/form";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { SIZE } from "@/constants/size";
-import dayjs from "dayjs";
 
 
 
@@ -24,6 +24,8 @@ export type TableCRUDProps = {
     hide?: string[]
     preload?: string[]
     omit?: Record<string, string[]>
+    options?: ((values: Record<string, any>) => React.ReactNode)[]
+    changeData?: () => void
 }
 
 const TableCRUD: React.FC<TableCRUDProps> = (props) => {
@@ -43,7 +45,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                     header: `${f.data.label}`,
                 }
 
-                if(props.cells?.[f.name]) {
+                if (props.cells?.[f.name]) {
                     c.Cell = p => {
                         const Item = props.cells?.[f.name];
                         if (!Item) return <></>;
@@ -52,20 +54,20 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                         return <Item {...value} />
                     }
                 }
-                
+
                 return c;
             }),
             {
                 accessorKey: "action",
                 header: "Tác vụ",
-                Cell: (props) => {
+                Cell: (propsCell) => {
                     return (
                         <Group style={{ cursor: "pointer" }}>
                             <Tooltip label="Xóa">
                                 <IconTrash
                                     color="red"
                                     onClick={() => {
-                                        const item = props.cell.row.original;
+                                        const item = propsCell.cell.row.original;
                                         if (!item?.ID) return;
 
                                         OpenModalConfirm({
@@ -81,7 +83,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                                 <IconPencilMinus
                                     color="blue"
                                     onClick={() => {
-                                        const item = props.cell.row.original;
+                                        const item = propsCell.cell.row.original;
                                         if (!item?.ID) return;
                                         fields.forEach((f) => {
                                             switch (f.type) {
@@ -115,6 +117,13 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
                                     }}
                                 />
                             </Tooltip>
+                            {
+                                props.options?.map((p, i) => (
+                                    <React.Fragment key={i}>
+                                        {p(propsCell.cell.row.original)}
+                                    </React.Fragment>
+                                ))
+                            }
                         </Group>
                     )
                 }
@@ -199,7 +208,9 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
         setDatas(datas.filter(d => d.ID !== id));
     }
 
-
+    useEffect(() => {
+        props.changeData && props.changeData();
+    }, [props.changeData]);
 
     // Init
     useEffect(() => {

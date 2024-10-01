@@ -29,4 +29,11 @@ export const endPoint = {
             headers: HEADER.defaultHeader(),
         })
     },
+    room: {
+        addAccount: () => ({
+            url: "api/v1/room/add-account",
+            method: "POST",
+            headers: HEADER.defaultHeader(),
+        })
+    }
 }
