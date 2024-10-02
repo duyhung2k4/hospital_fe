@@ -8,7 +8,7 @@ import { RoomModel } from "@/model/room";
 import { IconUser } from "@tabler/icons-react";
 import { OpenModalAction } from "@/utils/modal";
 import { useAddAccountForRoomMutation } from "@/redux/api/room";
-import { AddAccountForRoomReq } from "@/dto/request/room";
+// import { AddAccountForRoomReq } from "@/dto/request/room";
 
 
 
@@ -17,7 +17,7 @@ const Room: React.FC = () => {
     const [departments, setDepartments] = useState<DepartmentModel[]>([]);
 
     const [query, { isLoading }] = useQueryMutation();
-    const [addAccount, { isLoading: loadingAddAccount }] = useAddAccountForRoomMutation();
+    const [_, { isLoading: loadingAddAccount }] = useAddAccountForRoomMutation();
 
 
     const changeData = () => {
@@ -40,11 +40,11 @@ const Room: React.FC = () => {
 
     const handleAddAccount = async (values: Record<string, any>, room: RoomModel) => {
         if (!room.ID || !values?.email || !values?.password) return;
-        const payload: AddAccountForRoomReq = {
-            roomId: room.ID,
-            emailAccept: values.email,
-            password: values.password,
-        };
+        // const payload: AddAccountForRoomReq = {
+        //     roomId: room.ID,
+        //     emailAccept: values.email,
+        //     password: values.password,
+        // };
 
         // console.log(payload);
 
