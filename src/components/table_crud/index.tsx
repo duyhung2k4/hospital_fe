@@ -109,7 +109,7 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
 
                                         OpenModalAction({
                                             title: "Chỉnh sửa",
-                                            fields,
+                                            fields: fields.filter(f => f.isField !== false),
                                             idForm: "update-department",
                                             cb: (values) => handleUpdate(item.ID as number, values)
                                         });
