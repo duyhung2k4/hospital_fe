@@ -11,6 +11,7 @@ const links: ObjectRouter[] = [
     ROUTER.HOME,
     ROUTER.DEPARTMENT,
     ROUTER.ROOM,
+    ROUTER.DOCTOR,
     ROUTER.SCHEDULE,
     ROUTER.FIELD,
     ROUTER.CLINICAL,

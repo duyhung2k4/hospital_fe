@@ -7,7 +7,8 @@ import {
     IconBed,
     IconChartInfographic,
     IconStethoscope,
-    IconSpaces
+    IconSpaces,
+    IconUserCog
 } from "@tabler/icons-react"
 
 export type ObjectRouter = {
@@ -26,6 +27,7 @@ export type FieldRouter =
     | "FIELD_DETAIL"
     | "CLINICAL"
     | "SPEC"
+    | "DOCTOR"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -72,5 +74,11 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         type: "protected",
         name: "Khám chuyên khoa",
         icon: IconSpaces
+    },
+    DOCTOR: {
+        href: "/doctor",
+        type: "protected",
+        name: "Tài khoản Bác sĩ",
+        icon: IconUserCog
     }
 }

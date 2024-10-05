@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TableCRUD from "@/components/table_crud";
 
-import { Stack, Tooltip } from "@mantine/core";
+import { Badge, Group, Stack, Tooltip } from "@mantine/core";
 import { DEFAULT_QUERY_DATA, useQueryMutation } from "@/redux/api/query";
 import { DepartmentModel } from "@/model/department";
 import { RoomModel } from "@/model/room";
 import { IconUser } from "@tabler/icons-react";
 import { OpenModalAction } from "@/utils/modal";
 import { useAddAccountForRoomMutation } from "@/redux/api/room";
-// import { AddAccountForRoomReq } from "@/dto/request/room";
+import { AddAccountForRoomReq } from "@/dto/request/room";
 
 
 
 const Room: React.FC = () => {
+    const tableRef = useRef<any>(null);
+
+
 
     const [departments, setDepartments] = useState<DepartmentModel[]>([]);
 
     const [query, { isLoading }] = useQueryMutation();
-    const [_, { isLoading: loadingAddAccount }] = useAddAccountForRoomMutation();
+    const [addAccount, { isLoading: loadingAddAccount }] = useAddAccountForRoomMutation();
 
 
-    const changeData = () => {
-        console.log("cc");
-    }
 
     const handleGetDepartment = async () => {
         const result = await query({
@@ -39,20 +39,22 @@ const Room: React.FC = () => {
     }
 
     const handleAddAccount = async (values: Record<string, any>, room: RoomModel) => {
-        if (!room.ID || !values?.email || !values?.password) return;
-        // const payload: AddAccountForRoomReq = {
-        //     roomId: room.ID,
-        //     emailAccept: values.email,
-        //     password: values.password,
-        // };
+        if (
+            !room.ID ||
+            !values?.email ||
+            !values?.password ||
+            !tableRef?.current
+        ) return;
+        const payload: AddAccountForRoomReq = {
+            roomId: room.ID,
+            emailAccept: values.email,
+            password: values.password,
+        };
 
-        // console.log(payload);
-
-        // const result = await addAccount(payload);
-        // if ("error" in result) return;
-        // const newRoom = result.data.data as RoomModel;
-        // console.log(newRoom);
-        changeData();
+        const result = await addAccount(payload);
+        if ("error" in result) return;
+        const newRoom = result.data.data as RoomModel;
+        tableRef.current.changeData(newRoom);
     }
 
     const modalAddAccount = (values: Record<string, any>) => {
@@ -91,6 +93,7 @@ const Room: React.FC = () => {
     return (
         <Stack w={"100%"}>
             <TableCRUD
+                ref={tableRef}
                 isLoading={isLoading || loadingAddAccount}
                 model="room"
                 cells={{
@@ -98,12 +101,23 @@ const Room: React.FC = () => {
                         const room = values as RoomModel;
                         const department = departments.find(d => d.ID === room.departmentId);
                         return <>{department && department.name}</>
+                    },
+                    "statusAccount": (values) => {
+                        const room = values as RoomModel;
+                        return (
+                            <Group style={{ cursor: "pointer" }}>
+                                {
+                                    room.profile?.ID ?
+                                        <Badge color="green">Đã có</Badge> :
+                                        <Badge color="red">Chưa có</Badge>
+                                }
+                            </Group>
+                        )
                     }
                 }}
-                changeData={changeData}
                 preload={["Profile"]}
                 omit={{
-                    Profile: ["password", "username"]
+                    Profile: ["Password", "Username"],
                 }}
                 options={[
                     (values) => (
@@ -136,6 +150,15 @@ const Room: React.FC = () => {
                             label: "Khoa quản lí",
                             data: departments.map(d => ({ label: d.name, value: `${d.ID}` }))
                         }
+                    },
+                    {
+                        type: "text",
+                        size: 12,
+                        name: "statusAccount",
+                        data: {
+                            label: "Tài khoản"
+                        },
+                        isField: false,
                     }
                 ]}
             />

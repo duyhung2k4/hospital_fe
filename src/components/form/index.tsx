@@ -130,6 +130,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: TextInputProps
     }
     | {
@@ -137,6 +138,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: TextareaProps
     }
     | {
@@ -144,6 +146,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: NumberInputProps
     }
     | {
@@ -151,6 +154,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: SelectProps
     }
     | {
@@ -158,6 +162,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: MultiSelectProps
     }
     | {
@@ -165,6 +170,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: TagsInputProps
     }
     | {
@@ -172,6 +178,7 @@ export type FormCustomField =
         valueType?: "string" | "number"
         name: string
         size: number
+        isField?: boolean
         data: DatePickerInputProps
     }
 

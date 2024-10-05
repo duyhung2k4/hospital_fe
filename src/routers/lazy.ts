@@ -9,5 +9,6 @@ export const PageField = lazy(() => import("@/pages/field"));
 export const PageFieldDetail = lazy(() => import("@/pages/field_detail"));
 export const PageClinical = lazy(() => import("@/pages/clinical"));
 export const PageSpec = lazy(() => import("@/pages/spec"));
+export const PageDoctor = lazy(() => import("@/pages/doctor"));
 // other
 export const PageNotFound = lazy(() => import("@/pages/not_found"));

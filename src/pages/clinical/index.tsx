@@ -53,7 +53,7 @@ const Clinical: React.FC = () => {
                 size: 12,
                 data: {
                     label: "Danh sách khoa cần khám",
-                    data: departments.map(d => ({ label: d.name, value: `${d.ID}` }))
+                    data: departments.filter(d => d.rooms.length > 0).map(d => ({ label: d.name, value: `${d.ID}` }))
                 }
             }
         ]
@@ -67,6 +67,7 @@ const Clinical: React.FC = () => {
             data: {
                 ...DEFAULT_QUERY_DATA,
                 method: "get_all",
+                preload: ["Rooms"],
             }
         });
 

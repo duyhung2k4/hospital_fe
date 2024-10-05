@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import {
     PageClinical,
     PageDepartment,
+    PageDoctor,
     PageField,
     PageFieldDetail,
     PageHome,
@@ -30,6 +31,7 @@ const AppRouter: React.FC = () => {
                 <Route path={ROUTER.FIELD_DETAIL.href} element={<PageFieldDetail />} />
                 <Route path={ROUTER.CLINICAL.href} element={<PageClinical />} />
                 <Route path={ROUTER.SPEC.href} element={<PageSpec />} />
+                <Route path={ROUTER.DOCTOR.href} element={<PageDoctor />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>

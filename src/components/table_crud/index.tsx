@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import TableCustom from "@/components/table";
 import dayjs from "dayjs";
 
@@ -25,10 +25,9 @@ export type TableCRUDProps = {
     preload?: string[]
     omit?: Record<string, string[]>
     options?: ((values: Record<string, any>) => React.ReactNode)[]
-    changeData?: () => void
 }
 
-const TableCRUD: React.FC<TableCRUDProps> = (props) => {
+const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
     const [query, { isLoading }] = useQueryMutation();
     const [datas, setDatas] = useState<Record<string, any>[]>([]);
 
@@ -131,7 +130,7 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
         ]
 
         return {
-            fields,
+            fields: fields.filter(f => f.isField !== false),
             columns,
         };
     }, [datas]);
@@ -208,14 +207,18 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
         setDatas(datas.filter(d => d.ID !== id));
     }
 
-    useEffect(() => {
-        props.changeData && props.changeData();
-    }, [props.changeData]);
+
 
     // Init
     useEffect(() => {
         handleGet();
     }, []);
+
+    useImperativeHandle(ref, () => ({
+        changeData: (newData: Record<string, any>) => {
+            setDatas(datas.map(d => d?.ID === newData?.ID ? newData : d));
+        }
+    }));
 
 
 
@@ -248,6 +251,6 @@ const TableCRUD: React.FC<TableCRUDProps> = (props) => {
             />
         </Stack>
     )
-}
+})
 
 export default TableCRUD;
