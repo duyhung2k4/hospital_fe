@@ -34,6 +34,21 @@ export const endPoint = {
             url: "api/v1/room/add-account",
             method: "POST",
             headers: HEADER.defaultHeader(),
-        })
+        }),
+        callStep: () => ({
+            url: "api/v1/room/call-step",
+            method: "GET",
+            headers: HEADER.defaultHeader(),
+        }),
+        pullStep: () => ({
+            url: "api/v1/room/pull-step",
+            method: "POST",
+            headers: HEADER.defaultHeader(),
+        }),
+        saveStep: () => ({
+            url: "api/v1/room/save-step",
+            method: "POST",
+            headers: HEADER.defaultHeader(),
+        }),
     }
 }

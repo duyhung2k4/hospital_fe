@@ -21,6 +21,7 @@ const FieldDetail: React.FC = () => {
                 type: "select",
                 size: 6,
                 name: "departmentId",
+                noClear: true,
                 valueType: "number",
                 data: {
                     label: "Khoa quản lí",
@@ -69,8 +70,7 @@ const FieldDetail: React.FC = () => {
                 size: 6,
                 name: "defaultValues",
                 data: {
-                    label: "Tag select",
-                    placeholder: "Chỉ khả dụng cho kiểu select"
+                    label: "Tag select (Chỉ khả dụng cho kiểu select)",
                 }
             },
         ]

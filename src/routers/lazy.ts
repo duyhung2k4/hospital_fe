@@ -1,5 +1,8 @@
 import { lazy } from "react";
 
+// auth
+export const PageLogin = lazy(() => import("@/pages/login"));
+
 // page
 export const PageHome = lazy(() => import("@/pages/home"));
 export const PageDepartment = lazy(() => import("@/pages/department"));
@@ -10,5 +13,6 @@ export const PageFieldDetail = lazy(() => import("@/pages/field_detail"));
 export const PageClinical = lazy(() => import("@/pages/clinical"));
 export const PageSpec = lazy(() => import("@/pages/spec"));
 export const PageDoctor = lazy(() => import("@/pages/doctor"));
+
 // other
 export const PageNotFound = lazy(() => import("@/pages/not_found"));

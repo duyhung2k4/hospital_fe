@@ -9,6 +9,7 @@ import {
     PageField,
     PageFieldDetail,
     PageHome,
+    PageLogin,
     PageNotFound,
     PageRoom,
     PageSchedule,
@@ -22,6 +23,7 @@ const AppRouter: React.FC = () => {
 
     return (
         <Routes>
+            <Route path={ROUTER.LOGIN.href} element={<PageLogin />} />
             <Route element={<AppshellLayout />}>
                 <Route path={ROUTER.HOME.href} element={<PageHome />} />
                 <Route path={ROUTER.DEPARTMENT.href} element={<PageDepartment />} />
@@ -32,8 +34,8 @@ const AppRouter: React.FC = () => {
                 <Route path={ROUTER.CLINICAL.href} element={<PageClinical />} />
                 <Route path={ROUTER.SPEC.href} element={<PageSpec />} />
                 <Route path={ROUTER.DOCTOR.href} element={<PageDoctor />} />
-                <Route path="*" element={<PageNotFound />} />
             </Route>
+            <Route path="*" element={<PageNotFound />} />
         </Routes>
     )
 }

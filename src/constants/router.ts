@@ -28,6 +28,7 @@ export type FieldRouter =
     | "CLINICAL"
     | "SPEC"
     | "DOCTOR"
+    | "LOGIN"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -80,5 +81,10 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         type: "protected",
         name: "Tài khoản Bác sĩ",
         icon: IconUserCog
+    },
+    LOGIN: {
+        href: "/login",
+        type: "protected",
+        name: "Đăng nhập",
     }
 }

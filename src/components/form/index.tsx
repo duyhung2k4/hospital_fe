@@ -93,13 +93,14 @@ const FormCustom: React.FC<FormCustomProps> = (props) => {
         })
 
         props.cbSubmit(values);
-        if(props.clear === undefined || props.clear === true) form.reset();
-        props.fields.forEach(f => f.data.defaultValue = undefined);
+        handleClear();
     }
 
     const handleClear = () => {
         if(props.clear === undefined || props.clear === true) form.reset();
-        props.fields.forEach(f => f.data.defaultValue = undefined);
+        props.fields.forEach(f => {
+            if(!f.noClear) f.data.defaultValue = undefined;
+        });
     }
 
 
@@ -131,6 +132,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: TextInputProps
     }
     | {
@@ -139,6 +141,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: TextareaProps
     }
     | {
@@ -147,6 +150,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: NumberInputProps
     }
     | {
@@ -155,6 +159,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: SelectProps
     }
     | {
@@ -163,6 +168,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: MultiSelectProps
     }
     | {
@@ -171,6 +177,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: TagsInputProps
     }
     | {
@@ -179,6 +186,7 @@ export type FormCustomField =
         name: string
         size: number
         isField?: boolean
+        noClear?: boolean
         data: DatePickerInputProps
     }
 

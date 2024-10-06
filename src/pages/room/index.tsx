@@ -102,6 +102,10 @@ const Room: React.FC = () => {
                         const department = departments.find(d => d.ID === room.departmentId);
                         return <>{department && department.name}</>
                     },
+                    "roomType": (values) => {
+                        const room = values as RoomModel;
+                        return <>{room.roomType && (room.roomType === "room-clin" ? "Lâm sàng" : "Chuyên khoa")}</>
+                    },
                     "statusAccount": (values) => {
                         const room = values as RoomModel;
                         return (
@@ -143,11 +147,24 @@ const Room: React.FC = () => {
                     },
                     {
                         type: "select",
+                        valueType: "string",
+                        size: 12,
+                        name: "roomType",
+                        data: {
+                            label: "Loại phòng khám",
+                            data: [
+                                { label: "Lâm sàng", value: "room-clin" },
+                                { label: "Chuyên khoa", value: "room-spec" },
+                            ]
+                        }
+                    },
+                    {
+                        type: "select",
                         valueType: "number",
                         size: 12,
                         name: "departmentId",
                         data: {
-                            label: "Khoa quản lí",
+                            label: "Khoa quản lí (Chỉ áp dụng cho chuyên khoa)",
                             data: departments.map(d => ({ label: d.name, value: `${d.ID}` }))
                         }
                     },
