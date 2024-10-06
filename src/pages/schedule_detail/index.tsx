@@ -1,38 +1,35 @@
 import React, { useEffect, useMemo, useState } from "react";
 import FormCustom, { FormCustomField } from "@/components/form";
-import EditorCustom from "@/components/editor";
 import dayjs from "dayjs";
 
 import { Avatar, Button, Grid, Group, Loader, Stack, Text } from "@mantine/core";
 import { IconMapPin, IconPhone } from "@tabler/icons-react";
 import { DepartmentModel } from "@/model/department";
 import { DEFAULT_QUERY_DATA, useQueryMutation } from "@/redux/api/query";
-import { useCallMedicalFileQuery, usePullMedicalFileMutation, useTransitMutation } from "@/redux/api/schedule";
-import { TransitReq } from "@/dto/request/schedule";
+import { useNavigate, useParams } from "react-router";
+import { ScheduleModel } from "@/model/schedule";
+import { ConvertHTML } from "@/components/convertHTML";
+import { ROUTER } from "@/constants/router";
 
 import classes from "./style.module.css";
 
 
 
-const Clinical: React.FC = () => {
+const DetailResult: React.FC = () => {
+    const { id } = useParams();
+
+    const navigation = useNavigate();
+
+    const [schedule, setSchedule] = useState<ScheduleModel | null>(null);
     const [departments, setDepartments] = useState<DepartmentModel[]>([]);
-    const [resultEdittor, setResultEditor] = useState<string>("");
 
     const [query, { isLoading: loadingQuery }] = useQueryMutation();
-    const [create, { isLoading: loadingTransit }] = useTransitMutation();
-
-    const {
-        data: medicalFileData,
-        refetch: medicalFileRefetch,
-    } = useCallMedicalFileQuery(null);
-
-    const [pull, { isLoading: loadingPull }] = usePullMedicalFileMutation();
 
 
 
-    const schedule = useMemo(() => {
-        return medicalFileData?.data
-    }, [medicalFileData]);
+    // const schedule = useMemo(() => {
+    //     return medicalFileData?.data
+    // }, [medicalFileData]);
 
     const { fields } = useMemo(() => {
         const fields: FormCustomField[] = [
@@ -47,19 +44,28 @@ const Clinical: React.FC = () => {
                     defaultValue: schedule?.code || ""
                 }
             },
-            {
-                type: "multi_select",
-                name: "departments",
-                size: 12,
-                data: {
-                    label: "Danh sách khoa cần khám",
-                    data: departments.filter(d => d.rooms.length > 0).map(d => ({ label: d.name, value: `${d.ID}` }))
-                }
-            }
         ]
 
         return { fields }
     }, [departments, schedule]);
+
+    const handleGetSchedule = async () => {
+        if (!id) return;
+
+        const result = await query({
+            model: "schedule",
+            data: {
+                ...DEFAULT_QUERY_DATA,
+                condition: "id = ?",
+                args: [id],
+                preload: ["Steps", "Steps.Department", "Steps.Department.Fields"]
+            }
+        });
+
+        if ("error" in result) return;
+        const data = result.data.data as ScheduleModel
+        setSchedule(data || null);
+    }
 
     const handleGetDepartments = async () => {
         const result = await query({
@@ -71,47 +77,22 @@ const Clinical: React.FC = () => {
             }
         });
 
-        if("error" in result) return;
+        if ("error" in result) return;
         const data = result.data.data as DepartmentModel[] | [];
         setDepartments(data);
     }
 
-    const handleSubmit = async (values: Record<string, any>) => {
-        if(!schedule) return;
-        const payload: TransitReq = {
-            description: resultEdittor,
-            departmentIds: (values?.departments as string[] || []).map(id => Number(id)),
-            scheduleId: schedule.ID,
-        }
-
-        const result = await create(payload);
-        if("error" in result) return;
-        medicalFileRefetch();
-    }
-
-    const handlePull = async () => {
-        const result = await pull(null);
-        if("error" in result) return;
-        medicalFileRefetch();
-    }
-
     useEffect(() => {
-        medicalFileRefetch();
+        handleGetSchedule();
         handleGetDepartments();
     }, []);
 
-    if(loadingQuery || loadingPull) {
-        return (
-            <Stack h={"100%"} w={"100%"} justify="center" align="center">
-                <Loader/>
-            </Stack>
-        )
-    }
 
-    if(!schedule && !loadingQuery) {
+
+    if (!schedule && !loadingQuery) {
         return (
             <Stack h={"100%"} w={"100%"} justify="center" align="center">
-                <Button onClick={handlePull}>Lấy hồ sơ</Button>
+                <Loader />
             </Stack>
         )
     }
@@ -128,7 +109,7 @@ const Clinical: React.FC = () => {
                             <Text style={{ fontSize: 20 }}>{schedule?.name}</Text>
                         </Group>
                         <Stack>
-                            <Text fw={500} style={{ fontSize: 18 }}>Thông tin liên hệ </Text>
+                            <Text fw={800} style={{ fontSize: 18 }}>Thông tin liên hệ </Text>
                             <Group>
                                 <IconPhone />
                                 <Text>{schedule?.phone}</Text>
@@ -141,7 +122,7 @@ const Clinical: React.FC = () => {
                     </Stack>
 
                     <Stack className={classes.detail} mt={20}>
-                        <Text fw={500} style={{ fontSize: 18 }}>Thông tin chi tiết</Text>
+                        <Text fw={800} style={{ fontSize: 18 }}>Thông tin chi tiết</Text>
                         <Stack gap={4}>
                             <Group>
                                 <Text>Ngày sinh:</Text> <Text>{dayjs(schedule?.dob).format("DD/MM/YYYY")}</Text>
@@ -154,34 +135,70 @@ const Clinical: React.FC = () => {
                 </Grid.Col>
                 <Grid.Col span={8}>
                     <Stack className={classes.medical_file}>
-                        <Text fw={500} style={{ fontSize: 18 }}>Hồ sơ bệnh án</Text>
+                        <Text fw={800} style={{ fontSize: 18 }}>Hồ sơ bệnh án</Text>
                         <FormCustom
                             id="clinical"
                             fields={fields}
-                            cbSubmit={handleSubmit}
+                            cbSubmit={() => { }}
                             clear={false}
                         />
                         <Stack gap={4} mt={36}>
-                            <Text fw={500}>Mô tả</Text>
-                            <EditorCustom
-                                onChange={e => setResultEditor(e)}
+                            <Text fw={800}>Mô tả</Text>
+                            <ConvertHTML
+                                defaultContent={schedule?.description || ""}
                             />
                         </Stack>
                     </Stack>
                 </Grid.Col>
             </Grid>
 
+            {
+                (schedule?.steps || []).map(s => {
+                    const defaultValue = s.result.length === 0 ? {} : JSON.parse(s.result);
+
+                    const fields: FormCustomField[] = (s.department?.fields || []).map(f => ({
+                        type: f.type,
+                        size: 12,
+                        name: f.name,
+                        noClear: true,
+                        data: {
+                            label: f.label,
+                            placeholder: f.placeholder,
+                            data: f.defaultValues || [],
+                            readOnly: true,
+                            defaultValue: defaultValue[f.name]
+                        }
+                    }));
+
+                    return (
+                        <Stack key={s.ID} className={classes.form}>
+                            <Text fw={800}>{s.department?.name}</Text>
+                            <FormCustom
+                                fields={fields}
+                                id=""
+                                cbSubmit={() => { }}
+                            />
+                        </Stack>)
+                }
+                )
+            }
+
+            <Stack className={classes.result}>
+                <Text fw={800}>Kết luận</Text>
+                <ConvertHTML
+                    defaultContent={schedule?.result || ""}
+                />
+            </Stack>
+
+
             <Group className={classes.option} justify="end">
-                {/* <Button color="red">Hủy</Button> */}
-                <Button 
-                    color="green" 
-                    type="submit" 
-                    form="clinical"
-                    loading={loadingTransit}
-                >Hoàn thành</Button>
+                <Button
+                    color="green"
+                    onClick={() => navigation(ROUTER.SCHEDULE.href)}
+                >Quay lại</Button>
             </Group>
         </Stack>
     )
 }
 
-export default Clinical;
+export default DetailResult;

@@ -38,7 +38,7 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
         const fields: FormCustomField[] = props.fields;
 
         const columns: MRT_ColumnDef<Record<string, any>>[] = [
-            ...fields.map(f => {
+            ...fields.filter(f => f.isCol !== false).map(f => {
                 const c: MRT_ColumnDef<Record<string, any>> = {
                     accessorKey: f.name,
                     header: `${f.data.label}`,

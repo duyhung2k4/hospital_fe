@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { useCallStepQuery, usePullStepMutation, useSaveStepMutation } from "@/redux/api/room";
 import { Avatar, Button, Grid, Group, Stack, Text } from "@mantine/core";
 import { IconMapPin, IconPhone } from "@tabler/icons-react";
+import { ConvertHTML } from "@/components/convertHTML";
 
 import classes from "./style.module.css";
 
@@ -53,7 +54,7 @@ const Spec: React.FC = () => {
     }, [data]);
 
     const handleSubmit = async (values: Record<string, any>) => {
-        if(!schedule || !step.roomId) return;
+        if (!schedule || !step.roomId) return;
 
         const resultStep = JSON.stringify(values);
 
@@ -63,13 +64,13 @@ const Spec: React.FC = () => {
             roomId: step.roomId
         })
 
-        if("error" in result) return;
+        if ("error" in result) return;
         refetch();
     }
 
     const handlePullStep = async () => {
         const result = await pull(null);
-        if("error" in result) return;
+        if ("error" in result) return;
         refetch();
     }
 
@@ -130,7 +131,12 @@ const Spec: React.FC = () => {
                         </Group>
                         <Stack gap={4} mt={36}>
                             <Group>
-                                <Text>Mô tả:</Text> <Text>{schedule?.description}</Text>
+                                <Text>Mô tả:</Text>
+                                <Stack w={"100%"}>
+                                    <ConvertHTML
+                                        defaultContent={schedule?.description || ""}
+                                    />
+                                </Stack>
                             </Group>
                         </Stack>
                     </Stack>
@@ -149,7 +155,7 @@ const Spec: React.FC = () => {
             </Grid>
 
             <Group className={classes.option} justify="end">
-                <Button color="red">Hủy</Button>
+                {/* <Button color="red">Hủy</Button> */}
                 <Button color="green" type="submit" form="update-step">Hoàn thành</Button>
             </Group>
         </Stack>

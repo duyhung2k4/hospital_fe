@@ -1,34 +1,47 @@
 import React, { Suspense } from "react";
 
 import { useNavigate, useOutlet } from "react-router";
-import { AppShell, Burger, Group, LoadingOverlay, Text, Stack } from '@mantine/core';
+import { AppShell, Burger, Group, LoadingOverlay, Text, Stack, Avatar, Menu, rem } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ObjectRouter, ROUTER } from "@/constants/router";
 
 import classes from "./styles.module.css";
+import { useAppSelector } from "@/redux/hook";
+import { IconLogout } from "@tabler/icons-react";
+import Cookies from "js-cookie";
+import { TOKEN_TYPE } from "@/model/variable";
 
 const links: ObjectRouter[] = [
     ROUTER.HOME,
     ROUTER.DEPARTMENT,
-    ROUTER.ROOM,
-    ROUTER.DOCTOR,
+    ROUTER.ROOM_CLIN,
+    ROUTER.ROOM_SPEC,
     ROUTER.SCHEDULE,
     ROUTER.FIELD,
     ROUTER.CLINICAL,
     ROUTER.SPEC,
+    ROUTER.RESULT
 ]
 
 
 
 const AppshellLayout: React.FC = () => {
-    
+    const profile = useAppSelector(state => state.authSlice.profile);
+
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-    
+
     const outlet = useOutlet();
     const navigation = useNavigate();
-    
+
     const pathname = window.location.pathname;
+
+    const handleLogout = () => {
+        Cookies.remove(TOKEN_TYPE.ACCESS_TOKEN);
+        Cookies.remove(TOKEN_TYPE.REFRESH_TOKEN);
+
+        navigation(ROUTER.HOME.href);
+    }
 
 
 
@@ -45,10 +58,28 @@ const AppshellLayout: React.FC = () => {
                 withBorder={false}
             >
                 <AppShell.Header>
-                    <Group h="100%" px="md">
-                        <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
-                        <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
-                        <Text>HOSPITAL</Text>
+                    <Group h="100%" px="md" justify="space-between">
+                        <Group>
+                            <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+                            <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+                            <Text>HOSPITAL</Text>
+                        </Group>
+
+                        <Menu>
+                            <Menu.Target>
+                                <Group style={{ cursor: "pointer" }}>
+                                    <Text>{profile?.username}</Text>
+                                    <Avatar />
+                                </Group>
+                            </Menu.Target>
+
+                            <Menu.Dropdown>
+                                <Menu.Item onClick={handleLogout} leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}>
+                                    Đăng xuất
+                                </Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+
                     </Group>
                 </AppShell.Header>
                 <AppShell.Navbar p={0}>
@@ -76,7 +107,7 @@ const AppshellLayout: React.FC = () => {
                                     <Group
                                         gap={8}
                                         align="center"
-                                        w={280- 16 - 5}
+                                        w={280 - 16 - 5}
                                         style={{
                                             padding: "10px 8px",
                                             borderRadius: 16,

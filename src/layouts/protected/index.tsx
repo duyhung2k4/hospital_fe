@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import React, { Suspense, useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 
 import { ROUTER } from "@/constants/router";
 import { TOKEN_TYPE } from "@/model/variable";
@@ -15,9 +15,7 @@ const ProtectedLayout: React.FC = () => {
 
     const [refresh, { isLoading }] = useRefreshTokenMutation();
 
-    const accessToken = useMemo(() => {
-        return Cookies.get(TOKEN_TYPE.ACCESS_TOKEN);
-    }, [Cookies.get(TOKEN_TYPE.ACCESS_TOKEN)]);
+    const accessToken = Cookies.get(TOKEN_TYPE.ACCESS_TOKEN);
 
     useEffect(() => {
         if(!accessToken) {
@@ -38,7 +36,7 @@ const ProtectedLayout: React.FC = () => {
     }
 
     return (
-        <Suspense fallback={<LoadingOverlay visible overlayProps={{ radius: "sm", blur: 2 }} />}>{outlet}</Suspense>
+        <>{outlet}</>
     )
 }
 

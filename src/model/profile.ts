@@ -7,10 +7,12 @@ export type ProfileModel = BaseModel & {
     email: string
     address: string
     gender?: "male" | "female"
+    username: string
     password: string
     role: "admin" | "user" | "clin" | "spec"
     active: boolean
     avatar: number[][]
+    roomId?: number
 
     // Faces []Face `json:"faces" gorm:"foreignKey:ProfileId"`
 }

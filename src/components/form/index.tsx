@@ -130,6 +130,7 @@ export type FormCustomField =
         type: "text"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -139,6 +140,7 @@ export type FormCustomField =
         type: "area"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -148,6 +150,7 @@ export type FormCustomField =
         type: "number"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -157,6 +160,7 @@ export type FormCustomField =
         type: "select"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -166,6 +170,7 @@ export type FormCustomField =
         type: "multi_select"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -175,6 +180,7 @@ export type FormCustomField =
         type: "tag"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean
@@ -184,6 +190,7 @@ export type FormCustomField =
         type: "date"
         valueType?: "string" | "number"
         name: string
+        isCol?: boolean
         size: number
         isField?: boolean
         noClear?: boolean

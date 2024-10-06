@@ -1,5 +1,6 @@
 import { BaseModel } from "./base";
 import { ProfileModel } from "./profile";
+import { StepModel } from "./step";
 
 export type ScheduleModel = BaseModel & {
     clinId?: number
@@ -16,5 +17,5 @@ export type ScheduleModel = BaseModel & {
 
     clin?: ProfileModel
 
-    // steps: []Step
+    steps: StepModel[]
 }

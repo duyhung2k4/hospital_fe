@@ -8,7 +8,9 @@ import {
     IconChartInfographic,
     IconStethoscope,
     IconSpaces,
-    IconUserCog
+    IconUserCog,
+    IconThermometer,
+    IconReport
 } from "@tabler/icons-react"
 
 export type ObjectRouter = {
@@ -22,13 +24,15 @@ export type FieldRouter =
     | "HOME"
     | "DEPARTMENT"
     | "SCHEDULE"
-    | "ROOM"
+    | "ROOM_CLIN"
+    | "ROOM_SPEC"
     | "FIELD"
     | "FIELD_DETAIL"
     | "CLINICAL"
     | "SPEC"
     | "DOCTOR"
     | "LOGIN"
+    | "RESULT"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -48,11 +52,17 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         name: "Lịch khám",
         icon: IconCalendarMonth
     },
-    ROOM: {
-        href: "/room",
+    ROOM_CLIN: {
+        href: "/room-clin",
         type: "protected",
-        name: "Phòng khám",
+        name: "Phòng khám lâm sàng",
         icon: IconBed
+    },
+    ROOM_SPEC: {
+        href: "/room-spec",
+        type: "protected",
+        name: "Phòng khám chuyên khoa",
+        icon: IconThermometer
     },
     FIELD: {
         href: "/field",
@@ -86,5 +96,11 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         href: "/login",
         type: "protected",
         name: "Đăng nhập",
-    }
+    },
+    RESULT: {
+        href: "/result",
+        type: "protected",
+        name: "Kết luận",
+        icon: IconReport,
+    },
 }

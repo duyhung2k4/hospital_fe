@@ -12,7 +12,7 @@ import { AddAccountForRoomReq } from "@/dto/request/room";
 
 
 
-const Room: React.FC = () => {
+const RoomSpec: React.FC = () => {
     const tableRef = useRef<any>(null);
 
 
@@ -102,10 +102,6 @@ const Room: React.FC = () => {
                         const department = departments.find(d => d.ID === room.departmentId);
                         return <>{department && department.name}</>
                     },
-                    "roomType": (values) => {
-                        const room = values as RoomModel;
-                        return <>{room.roomType && (room.roomType === "room-clin" ? "Lâm sàng" : "Chuyên khoa")}</>
-                    },
                     "statusAccount": (values) => {
                         const room = values as RoomModel;
                         return (
@@ -117,8 +113,10 @@ const Room: React.FC = () => {
                                 }
                             </Group>
                         )
-                    }
+                    },
                 }}
+                condition="room_type = ?"
+                args={["room-spec"]}
                 preload={["Profile"]}
                 omit={{
                     Profile: ["Password", "Username"],
@@ -147,24 +145,28 @@ const Room: React.FC = () => {
                     },
                     {
                         type: "select",
-                        valueType: "string",
-                        size: 12,
+                        size: 6,
                         name: "roomType",
-                        data: {
+                        noClear: true,
+                        data: { 
                             label: "Loại phòng khám",
+                            value: "room-spec",
+                            defaultValue: "room-spec",
                             data: [
                                 { label: "Lâm sàng", value: "room-clin" },
                                 { label: "Chuyên khoa", value: "room-spec" },
-                            ]
-                        }
+                            ],
+                            readOnly: true,
+                        },
+                        isCol: false
                     },
                     {
                         type: "select",
                         valueType: "number",
-                        size: 12,
+                        size: 6,
                         name: "departmentId",
                         data: {
-                            label: "Khoa quản lí (Chỉ áp dụng cho chuyên khoa)",
+                            label: "Khoa quản lí",
                             data: departments.map(d => ({ label: d.name, value: `${d.ID}` }))
                         }
                     },
@@ -183,4 +185,4 @@ const Room: React.FC = () => {
     )
 }
 
-export default Room;
+export default RoomSpec;
