@@ -7,4 +7,5 @@ export type QueryReq = {
     preload: string[]
     omit: Record<string, string[]>
     method: METHOD
+    order: string
 }

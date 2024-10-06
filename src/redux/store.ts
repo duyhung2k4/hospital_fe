@@ -3,10 +3,12 @@ import { rootReducer } from "./reducer";
 import { queryApi } from "./api/query";
 import { scheduleApi } from "./api/schedule";
 import { roomApi } from "./api/room";
+import { authApi } from "./api/auth";
 
 
 
 const middleware = [
+    authApi.middleware,
     queryApi.middleware,
     scheduleApi.middleware,
     roomApi.middleware,

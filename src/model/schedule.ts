@@ -10,6 +10,7 @@ export type ScheduleModel = BaseModel & {
     gender: string
     phone: string
     description: string
+    result: string
     avatar: number[]
     status: string
 

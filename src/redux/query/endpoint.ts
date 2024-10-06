@@ -1,54 +1,85 @@
+import Cookies from "js-cookie";
+import { TOKEN_TYPE } from "@/model/variable";
+
+
+
 export const HEADER = {
     defaultHeader: () => ({
         accept: 'application/json',
     }),
+    refreshTokenHeader: () => {
+        const token = Cookies.get(TOKEN_TYPE.REFRESH_TOKEN);
+        return {
+            accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+        }
+    },
+    protectedHeader: () => {
+        const token = Cookies.get(TOKEN_TYPE.ACCESS_TOKEN);
+        return {
+            accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+        }
+    }
 }
 
 export const endPoint = {
-    query: {
-        query: (model: string) => ({
-            url: `api/v1/query/${model}`,
+    auth: {
+        loginGoogle: () => ({
+            url: "api/v1/public/login",
             method: "POST",
             headers: HEADER.defaultHeader(),
+        }),
+        refreshToken: () => ({
+            url: "api/v1/protected/refresh-token",
+            method: "POST",
+            headers: HEADER.refreshTokenHeader(),
+        }),
+    },
+    query: {
+        query: (model: string) => ({
+            url: `api/v1/protected/query/${model}`,
+            method: "POST",
+            headers: HEADER.protectedHeader(),
         }),
     },
     schedule: {
         callMedicalFile: () => ({
-            url: "api/v1/schedule/call-medical-file",
+            url: "api/v1/protected/schedule/call-medical-file",
             method: "GET",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
         pullMedicalFile: () => ({
-            url: "api/v1/schedule/pull-medical-file",
+            url: "api/v1/protected/schedule/pull-medical-file",
             method: "POST",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
         transit: () => ({
-            url: "api/v1/schedule/transit",
+            url: "api/v1/protected/schedule/transit",
             method: "POST",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         })
     },
     room: {
         addAccount: () => ({
-            url: "api/v1/room/add-account",
+            url: "api/v1/protected/room/add-account",
             method: "POST",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
         callStep: () => ({
-            url: "api/v1/room/call-step",
+            url: "api/v1/protected/room/call-step",
             method: "GET",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
         pullStep: () => ({
-            url: "api/v1/room/pull-step",
+            url: "api/v1/protected/room/pull-step",
             method: "POST",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
         saveStep: () => ({
-            url: "api/v1/room/save-step",
+            url: "api/v1/protected/room/save-step",
             method: "POST",
-            headers: HEADER.defaultHeader(),
+            headers: HEADER.protectedHeader(),
         }),
     }
 }

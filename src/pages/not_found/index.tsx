@@ -7,8 +7,8 @@ const NotFound: React.FC = () => {
         <div className="container">
             <div className="section">
                 <h1 className="error text">404</h1>
-                <div className="page">Ooops!!! The page you are looking for is not found</div>
-                <NavLink className="back-home text" to="/">Back to home</NavLink>
+                <div className="page">Lỗi!!! Trang này không tồn tại</div>
+                <NavLink className="back-home text" to="/">Trở về trang chủ</NavLink>
             </div>
         </div>
     )

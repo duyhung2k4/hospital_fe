@@ -35,4 +35,5 @@ export const DEFAULT_QUERY_DATA: QueryReq = {
     args: [],
     preload: [],
     omit: {},
+    order: "",
 }
