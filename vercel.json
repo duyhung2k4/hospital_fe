@@ -1,8 +1,9 @@
 {
     "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/"
-        }
+      {
+        "source": "/api/(.*)",
+        "destination": "http://34.67.92.57:10000/api/v1/public/$1"
+      }
     ]
-}
+  }
+  
