@@ -7,10 +7,11 @@ import { authApi } from "../api/auth";
 
 interface AuthState {
   profile?: ProfileModel
+  role: "admin" | "room-clin" | "room-spec" | ""
 }
 
 const initialState: AuthState = {
-
+    role: ""
 }
 
 const authSlice = createSlice({
@@ -20,6 +21,13 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, { payload }) => {
       state.profile = payload.data?.profile;
+      if(payload.data?.profile.role === "admin") {
+        state.role = "admin"
+      } else {
+        state.role = payload.data?.profile.room?.roomType || ""
+      }
+
+
       if(payload.data?.accessToken && payload.data?.refreshToken) {
         Cookies.set(TOKEN_TYPE.ACCESS_TOKEN, payload.data.accessToken, { expires: 1 });
         Cookies.set(TOKEN_TYPE.REFRESH_TOKEN, payload.data.refreshToken, { expires: 3 });
@@ -33,6 +41,12 @@ const authSlice = createSlice({
     
     builder.addMatcher(authApi.endpoints.refreshToken.matchFulfilled, (state, { payload }) => {
       state.profile = payload.data?.profile;
+      if(payload.data?.profile.role === "admin") {
+        state.role = "admin"
+      } else {
+        state.role = payload.data?.profile.room?.roomType || ""
+      }
+      
       if(payload.data?.accessToken && payload.data?.refreshToken) {
         Cookies.set(TOKEN_TYPE.ACCESS_TOKEN, payload.data.accessToken, { expires: 1 });
         Cookies.set(TOKEN_TYPE.REFRESH_TOKEN, payload.data.refreshToken, { expires: 3 });

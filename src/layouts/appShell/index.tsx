@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 
 import { useNavigate, useOutlet } from "react-router";
 import { AppShell, Burger, Group, LoadingOverlay, Text, Stack, Avatar, Menu, rem } from '@mantine/core';
@@ -11,22 +11,46 @@ import { IconLogout } from "@tabler/icons-react";
 import Cookies from "js-cookie";
 import { TOKEN_TYPE } from "@/model/variable";
 
-const links: ObjectRouter[] = [
-    ROUTER.HOME,
-    ROUTER.DEPARTMENT,
-    ROUTER.ROOM_CLIN,
-    ROUTER.ROOM_SPEC,
-    ROUTER.SCHEDULE,
-    ROUTER.FIELD,
-    ROUTER.CLINICAL,
-    ROUTER.SPEC,
-    ROUTER.RESULT
-]
 
 
 
 const AppshellLayout: React.FC = () => {
-    const profile = useAppSelector(state => state.authSlice.profile);
+    const { 
+        profile,
+        role,
+    } = useAppSelector(state => {
+        return ({
+            profile: state.authSlice.profile,
+            role: state.authSlice.role,
+        })
+    });
+
+    const links: ObjectRouter[] = useMemo(() => {
+        let list: ObjectRouter[] = [ROUTER.HOME];
+
+        if(role === "admin") {
+            list.push(...[
+                ROUTER.DEPARTMENT,
+                ROUTER.ROOM_CLIN,
+                ROUTER.ROOM_SPEC,
+                ROUTER.SCHEDULE,
+                ROUTER.FIELD,
+            ])
+        }
+
+        if(role === "room-clin") {
+            list.push(...[
+                ROUTER.CLINICAL,
+                ROUTER.RESULT,
+            ])
+        }
+
+        if(role === "room-spec") {
+            list.push(ROUTER.SPEC,)
+        }
+
+        return list;
+    }, [role]);
 
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);

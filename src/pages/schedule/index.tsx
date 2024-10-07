@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { ROUTER } from "@/constants/router";
 
 
-const mapStatus: Record<string, any> = {
+export const mapStatus: Record<string, any> = {
     "done": <Badge color="green">Khám xong</Badge>,
     "pending": <Badge color="yellow">Đang chờ</Badge>,
     "transited": <Badge color="orange">Chuyển tuyến</Badge>,

@@ -24,6 +24,8 @@ export type TableCRUDProps = {
     hide?: string[]
     preload?: string[]
     omit?: Record<string, string[]>
+    isOption?: boolean
+    isAction?: boolean
     options?: ((values: Record<string, any>) => React.ReactNode)[]
 }
 
@@ -56,78 +58,83 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
 
                 return c;
             }),
-            {
-                accessorKey: "action",
-                header: "Tác vụ",
-                Cell: (propsCell) => {
-                    return (
-                        <Group style={{ cursor: "pointer" }}>
-                            <Tooltip label="Xóa">
-                                <IconTrash
-                                    color="red"
-                                    onClick={() => {
-                                        const item = propsCell.cell.row.original;
-                                        if (!item?.ID) return;
-
-                                        OpenModalConfirm({
-                                            title: "Xác nhận xóa",
-                                            text: <>Bạn thật sự muốn xóa dữ liệu</>,
-                                            idForm: "delete-department",
-                                            cb: () => handleDelete(item.ID as number)
-                                        });
-                                    }}
-                                />
-                            </Tooltip>
-                            <Tooltip label="Chỉnh sửa">
-                                <IconPencilMinus
-                                    color="blue"
-                                    onClick={() => {
-                                        const item = propsCell.cell.row.original;
-                                        if (!item?.ID) return;
-                                        fields.forEach((f) => {
-                                            switch (f.type) {
-                                                case "tag":
-                                                    f.data = {
-                                                        ...f.data,
-                                                        defaultValue: item[f.name] || []
-                                                    }
-                                                    break;
-                                                case "date":
-                                                    f.data = {
-                                                        ...f.data,
-                                                        defaultValue: item[f.name] ? dayjs(item[f.name]).toDate() : null
-                                                    }
-                                                    break;
-                                                default:
-                                                    f.data = {
-                                                        ...f.data,
-                                                        defaultValue: item[f.name],
-                                                    }
-                                                    break;
-                                            }
-                                        })
-
-                                        OpenModalAction({
-                                            title: "Chỉnh sửa",
-                                            fields: fields.filter(f => f.isField !== false),
-                                            idForm: "update-department",
-                                            cb: (values) => handleUpdate(item.ID as number, values)
-                                        });
-                                    }}
-                                />
-                            </Tooltip>
-                            {
-                                props.options?.map((p, i) => (
-                                    <React.Fragment key={i}>
-                                        {p(propsCell.cell.row.original)}
-                                    </React.Fragment>
-                                ))
-                            }
-                        </Group>
-                    )
-                }
-            }
         ]
+
+        if (props.isOption !== false) {
+            columns.push(...[
+                {
+                    accessorKey: "action",
+                    header: "Tác vụ",
+                    Cell: (propsCell) => {
+                        return (
+                            <Group style={{ cursor: "pointer" }}>
+                                <Tooltip label="Xóa">
+                                    <IconTrash
+                                        color="red"
+                                        onClick={() => {
+                                            const item = propsCell.cell.row.original;
+                                            if (!item?.ID) return;
+
+                                            OpenModalConfirm({
+                                                title: "Xác nhận xóa",
+                                                text: <>Bạn thật sự muốn xóa dữ liệu</>,
+                                                idForm: "delete-department",
+                                                cb: () => handleDelete(item.ID as number)
+                                            });
+                                        }}
+                                    />
+                                </Tooltip>
+                                <Tooltip label="Chỉnh sửa">
+                                    <IconPencilMinus
+                                        color="blue"
+                                        onClick={() => {
+                                            const item = propsCell.cell.row.original;
+                                            if (!item?.ID) return;
+                                            fields.forEach((f) => {
+                                                switch (f.type) {
+                                                    case "tag":
+                                                        f.data = {
+                                                            ...f.data,
+                                                            defaultValue: item[f.name] || []
+                                                        }
+                                                        break;
+                                                    case "date":
+                                                        f.data = {
+                                                            ...f.data,
+                                                            defaultValue: item[f.name] ? dayjs(item[f.name]).toDate() : null
+                                                        }
+                                                        break;
+                                                    default:
+                                                        f.data = {
+                                                            ...f.data,
+                                                            defaultValue: item[f.name],
+                                                        }
+                                                        break;
+                                                }
+                                            })
+
+                                            OpenModalAction({
+                                                title: "Chỉnh sửa",
+                                                fields: fields.filter(f => f.isField !== false),
+                                                idForm: "update-department",
+                                                cb: (values) => handleUpdate(item.ID as number, values)
+                                            });
+                                        }}
+                                    />
+                                </Tooltip>
+                                {
+                                    props.options?.map((p, i) => (
+                                        <React.Fragment key={i}>
+                                            {p(propsCell.cell.row.original)}
+                                        </React.Fragment>
+                                    ))
+                                }
+                            </Group>
+                        )
+                    }
+                }
+            ] as MRT_ColumnDef<Record<string, any>>[])
+        }
 
         return {
             fields: fields.filter(f => f.isField !== false),
@@ -231,22 +238,24 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
                 loading={isLoading || props.isLoading}
                 maxHeight={`calc(100vh - ${SIZE.h_header} - ${SIZE.t_toolbar} - ${SIZE.t_header} - ${SIZE.t_footer})`}
                 action={
-                    <Group>
-                        <Button
-                            onClick={() => OpenModalAction({
-                                title: "Thêm mới",
-                                fields,
-                                idForm: "create-department",
-                                cb: handleCreate,
-                            })}
-                            leftSection={<IconPlus />}
-                            color="green"
-                        >Thêm</Button>
-                        <Button
-                            onClick={handleGet}
-                            leftSection={<IconReload />}
-                        >Tải lại</Button>
-                    </Group>
+                    props.isAction !== false ?
+                        <Group>
+                            <Button
+                                onClick={() => OpenModalAction({
+                                    title: "Thêm mới",
+                                    fields,
+                                    idForm: "create-department",
+                                    cb: handleCreate,
+                                })}
+                                leftSection={<IconPlus />}
+                                color="green"
+                            >Thêm</Button>
+                            <Button
+                                onClick={handleGet}
+                                leftSection={<IconReload />}
+                            >Tải lại</Button>
+                        </Group>
+                        : <Group></Group>
                 }
             />
         </Stack>

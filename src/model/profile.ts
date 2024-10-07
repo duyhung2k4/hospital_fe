@@ -1,4 +1,5 @@
 import { BaseModel } from "./base";
+import { RoomModel } from "./room";
 
 export type ProfileModel = BaseModel & {
     firstName: string
@@ -13,6 +14,8 @@ export type ProfileModel = BaseModel & {
     active: boolean
     avatar: number[][]
     roomId?: number
+
+    room?: RoomModel
 
     // Faces []Face `json:"faces" gorm:"foreignKey:ProfileId"`
 }
