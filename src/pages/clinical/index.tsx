@@ -11,12 +11,17 @@ import { useCallMedicalFileQuery, usePullMedicalFileMutation, useTransitMutation
 import { TransitReq } from "@/dto/request/schedule";
 
 import classes from "./style.module.css";
+import ModalFaceAuth from "./modal";
 
 
 
 const Clinical: React.FC = () => {
     const [departments, setDepartments] = useState<DepartmentModel[]>([]);
+    const [form, setForm] = useState<Record<string, any>>({});
+    const [modal, setModal] = useState<boolean>(false);
     const [resultEdittor, setResultEditor] = useState<string>("");
+
+
 
     const [query, { isLoading: loadingQuery }] = useQueryMutation();
     const [create, { isLoading: loadingTransit }] = useTransitMutation();
@@ -76,9 +81,15 @@ const Clinical: React.FC = () => {
         setDepartments(data);
     }
 
-    const handleSubmit = async (values: Record<string, any>) => {
+    const handleFaceAuth = async (values: Record<string, any>) => {
+        setForm(values);
+        setModal(true);
+    }
+
+    const handleSubmit = async (values: Record<string, any>, profileId: number) => {
         if(!schedule) return;
         const payload: TransitReq = {
+            clinId: profileId,
             description: resultEdittor,
             departmentIds: (values?.departments as string[] || []).map(id => Number(id)),
             scheduleId: schedule.ID,
@@ -87,6 +98,7 @@ const Clinical: React.FC = () => {
         const result = await create(payload);
         if("error" in result) return;
         medicalFileRefetch();
+        setModal(false);
     }
 
     const handlePull = async () => {
@@ -117,70 +129,82 @@ const Clinical: React.FC = () => {
     }
 
     return (
-        <Stack
-            w={"100%"}
-        >
-            <Grid>
-                <Grid.Col span={4}>
-                    <Stack className={classes.info}>
-                        <Group>
-                            <Avatar radius="xl" size={80} />
-                            <Text style={{ fontSize: 20 }}>{schedule?.name}</Text>
-                        </Group>
-                        <Stack>
-                            <Text fw={500} style={{ fontSize: 18 }}>Thông tin liên hệ </Text>
+        <>
+            <Stack
+                w={"100%"}
+            >
+                <Grid>
+                    <Grid.Col span={4}>
+                        <Stack className={classes.info}>
                             <Group>
-                                <IconPhone />
-                                <Text>{schedule?.phone}</Text>
+                                <Avatar radius="xl" size={80} />
+                                <Text style={{ fontSize: 20 }}>{schedule?.name}</Text>
                             </Group>
-                            <Group>
-                                <IconMapPin />
-                                <Text>{schedule?.address}</Text>
-                            </Group>
+                            <Stack>
+                                <Text fw={500} style={{ fontSize: 18 }}>Thông tin liên hệ </Text>
+                                <Group>
+                                    <IconPhone />
+                                    <Text>{schedule?.phone}</Text>
+                                </Group>
+                                <Group>
+                                    <IconMapPin />
+                                    <Text>{schedule?.address}</Text>
+                                </Group>
+                            </Stack>
                         </Stack>
-                    </Stack>
 
-                    <Stack className={classes.detail} mt={20}>
-                        <Text fw={500} style={{ fontSize: 18 }}>Thông tin chi tiết</Text>
-                        <Stack gap={4}>
-                            <Group>
-                                <Text>Ngày sinh:</Text> <Text>{dayjs(schedule?.dob).format("DD/MM/YYYY")}</Text>
-                            </Group>
-                            <Group>
-                                <Text>Giới tính:</Text> <Text>{schedule?.gender}</Text>
-                            </Group>
+                        <Stack className={classes.detail} mt={20}>
+                            <Text fw={500} style={{ fontSize: 18 }}>Thông tin chi tiết</Text>
+                            <Stack gap={4}>
+                                <Group>
+                                    <Text>Ngày sinh:</Text> <Text>{dayjs(schedule?.dob).format("DD/MM/YYYY")}</Text>
+                                </Group>
+                                <Group>
+                                    <Text>Giới tính:</Text> <Text>{schedule?.gender}</Text>
+                                </Group>
+                            </Stack>
                         </Stack>
-                    </Stack>
-                </Grid.Col>
-                <Grid.Col span={8}>
-                    <Stack className={classes.medical_file}>
-                        <Text fw={500} style={{ fontSize: 18 }}>Hồ sơ bệnh án</Text>
-                        <FormCustom
-                            id="clinical"
-                            fields={fields}
-                            cbSubmit={handleSubmit}
-                            clear={false}
-                        />
-                        <Stack gap={4} mt={36}>
-                            <Text fw={500}>Mô tả</Text>
-                            <EditorCustom
-                                onChange={e => setResultEditor(e)}
+                    </Grid.Col>
+                    <Grid.Col span={8}>
+                        <Stack className={classes.medical_file}>
+                            <Text fw={500} style={{ fontSize: 18 }}>Hồ sơ bệnh án</Text>
+                            <FormCustom
+                                id="clinical"
+                                fields={fields}
+                                cbSubmit={handleFaceAuth}
+                                clear={false}
                             />
+                            <Stack gap={4} mt={36}>
+                                <Text fw={500}>Mô tả</Text>
+                                <EditorCustom
+                                    onChange={e => setResultEditor(e)}
+                                />
+                            </Stack>
                         </Stack>
-                    </Stack>
-                </Grid.Col>
-            </Grid>
+                    </Grid.Col>
+                </Grid>
 
-            <Group className={classes.option} justify="end">
-                {/* <Button color="red">Hủy</Button> */}
-                <Button 
-                    color="green" 
-                    type="submit" 
-                    form="clinical"
-                    loading={loadingTransit}
-                >Hoàn thành</Button>
-            </Group>
-        </Stack>
+                <Group className={classes.option} justify="end">
+                    <Button
+                        color="green"
+                        type="submit"
+                        form="clinical"
+                        loading={loadingTransit}
+                    >Hoàn thành</Button>
+                </Group>
+            </Stack>
+
+            <ModalFaceAuth
+                open={modal}
+                cb={(profileId) => {
+                    handleSubmit(form, profileId);
+                }}
+                onClose={() => {
+                    setModal(false);
+                    setForm({});
+                }}
+            />
+        </>
     )
 }
 

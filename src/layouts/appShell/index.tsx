@@ -1,16 +1,15 @@
 import React, { Suspense, useMemo } from "react";
+import Cookies from "js-cookie";
 
 import { useNavigate, useOutlet } from "react-router";
 import { AppShell, Burger, Group, LoadingOverlay, Text, Stack, Avatar, Menu, rem } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ObjectRouter, ROUTER } from "@/constants/router";
-
-import classes from "./styles.module.css";
 import { useAppSelector } from "@/redux/hook";
 import { IconLogout } from "@tabler/icons-react";
-import Cookies from "js-cookie";
 import { TOKEN_TYPE } from "@/model/variable";
 
+import classes from "./styles.module.css";
 
 
 
@@ -28,24 +27,25 @@ const AppshellLayout: React.FC = () => {
     const links: ObjectRouter[] = useMemo(() => {
         let list: ObjectRouter[] = [ROUTER.HOME];
 
-        if(role === "admin") {
-            list.push(...[
+        if (role === "admin") {
+            list.push(
                 ROUTER.DEPARTMENT,
                 ROUTER.ROOM_CLIN,
                 ROUTER.ROOM_SPEC,
+                ROUTER.ACCOUNT_DOCTOR,
                 ROUTER.SCHEDULE,
                 ROUTER.FIELD,
-            ])
+            )
         }
 
-        if(role === "room-clin") {
+        if (role === "room-clin") {
             list.push(...[
                 ROUTER.CLINICAL,
                 ROUTER.RESULT,
             ])
         }
 
-        if(role === "room-spec") {
+        if (role === "room-spec") {
             list.push(ROUTER.SPEC,)
         }
 

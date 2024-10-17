@@ -5,3 +5,9 @@ export type AuthResponse = {
   refreshToken: string
   profile: ProfileModel
 }
+
+export type RegisterResponse = string
+
+export type SendFileAuthResponse = {
+    data: string
+}

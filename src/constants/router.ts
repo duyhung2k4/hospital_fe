@@ -10,7 +10,8 @@ import {
     IconSpaces,
     IconUserCog,
     IconThermometer,
-    IconReport
+    IconReport,
+    IconUserPlus
 } from "@tabler/icons-react"
 
 export type ObjectRouter = {
@@ -26,6 +27,7 @@ export type FieldRouter =
     | "SCHEDULE"
     | "ROOM_CLIN"
     | "ROOM_SPEC"
+    | "ACCOUNT_DOCTOR"
     | "FIELD"
     | "FIELD_DETAIL"
     | "CLINICAL"
@@ -33,6 +35,10 @@ export type FieldRouter =
     | "DOCTOR"
     | "LOGIN"
     | "RESULT"
+    | "CREATE_PROCESS"
+    | "SAVE_PROCESS"
+    | "FACE_AUTH"
+    | "FACE_LOGIN"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -102,5 +108,27 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         type: "protected",
         name: "Kết luận",
         icon: IconReport,
+    },
+    ACCOUNT_DOCTOR: {
+        href: "/account-doctor",
+        type: "protected",
+        name: "Tài khoản bác sĩ",
+        icon: IconUserPlus,
+    },
+    CREATE_PROCESS: {
+        href: "/create-process",
+        type: "protected",
+    },
+    SAVE_PROCESS: {
+        href: "/save-process",
+        type: "protected",
+    },
+    FACE_AUTH: {
+        href: "/face-auth",
+        type: "protected",
+    },
+    FACE_LOGIN: {
+        href: "/face-login",
+        type: "protected",
     },
 }

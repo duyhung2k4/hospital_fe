@@ -1,19 +1,16 @@
 import Cookies from "js-cookie";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
 import { ROUTER } from "@/constants/router";
 import { TOKEN_TYPE } from "@/model/variable";
-import { LoadingOverlay } from "@mantine/core";
 import { useNavigate, useOutlet } from "react-router";
-import { useRefreshTokenMutation } from "@/redux/api/auth";
+import { LoadingOverlay } from "@mantine/core";
 
 
 
 const ProtectedLayout: React.FC = () => {
     const outlet = useOutlet();
     const navigation = useNavigate();
-
-    const [refresh, { isLoading }] = useRefreshTokenMutation();
 
     const accessToken = Cookies.get(TOKEN_TYPE.ACCESS_TOKEN);
 
@@ -23,20 +20,14 @@ const ProtectedLayout: React.FC = () => {
         }
     }, [accessToken]);
 
-    useEffect(() => {
-        refresh(null);
-    }, []);
-
-    if(isLoading) {
-        return <LoadingOverlay visible overlayProps={{ radius: "sm", blur: 2 }} />
-    }
-
     if(!accessToken) {
         return <></>
     }
 
     return (
-        <>{outlet}</>
+        <Suspense fallback={<LoadingOverlay visible overlayProps={{ radius: "sm", blur: 2 }} />}>
+            {outlet}
+        </Suspense>
     )
 }
 

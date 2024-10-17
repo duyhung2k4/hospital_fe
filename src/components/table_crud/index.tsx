@@ -140,7 +140,7 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
             fields: fields.filter(f => f.isField !== false),
             columns,
         };
-    }, [datas]);
+    }, [datas, props.fields, props.cells]);
 
 
 

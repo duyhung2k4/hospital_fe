@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AppshellLayout from "@/layouts/appShell";
+import ProtectedLayout from "@/layouts/protected";
 
 import { Routes, Route } from "react-router-dom";
 import {
+    PageAccountDoctor,
     PageClinical,
     PageDepartment,
     PageDetailResult,
+    PageFaceAuth,
+    PageFaceLogin,
     PageField,
     PageFieldDetail,
     PageHome,
@@ -14,18 +18,30 @@ import {
     PageResult,
     PageRoomClin,
     PageRoomSpec,
+    PageSaveProcess,
     PageSchedule,
     PageScheduleDetail,
     PageSpec,
 } from "./lazy";
 import { ROUTER } from "@/constants/router";
-import ProtectedLayout from "@/layouts/protected";
 import { useAppSelector } from "@/redux/hook";
+import { useRefreshTokenMutation } from "@/redux/api/auth";
+import { LoadingOverlay } from "@mantine/core";
 
 
 
 const AppRouter: React.FC = () => {
     const role = useAppSelector(state => state.authSlice.role);
+
+    const [refresh, { isLoading }] = useRefreshTokenMutation();
+    
+    useEffect(() => {
+        refresh(null);
+    }, []);
+
+    if(isLoading) {
+        return <LoadingOverlay visible overlayProps={{ radius: "sm", blur: 2 }} />
+    }
 
     return (
         <Routes>
@@ -45,6 +61,7 @@ const AppRouter: React.FC = () => {
                             <Route path={ROUTER.ROOM_SPEC.href} element={<PageRoomSpec />} />
                             <Route path={ROUTER.FIELD.href} element={<PageField />} />
                             <Route path={ROUTER.FIELD_DETAIL.href} element={<PageFieldDetail />} />
+                            <Route path={ROUTER.ACCOUNT_DOCTOR.href} element={<PageAccountDoctor />} />
                         </>
                     }
 
@@ -65,8 +82,16 @@ const AppRouter: React.FC = () => {
                     }
 
                     <Route path={`${ROUTER.RESULT.href}/:id`} element={<PageDetailResult />} />
-                    {/* <Route path={ROUTER.DOCTOR.href} element={<PageDoctor />} /> */}
                 </Route>
+
+                {
+                    role === "admin" &&
+                    <>
+                        <Route path={`${ROUTER.FACE_AUTH.href}/:id`} element={<PageFaceAuth />} />
+                        <Route path={`${ROUTER.FACE_LOGIN.href}`} element={<PageFaceLogin />} />
+                        <Route path={`${ROUTER.SAVE_PROCESS.href}/:id`} element={<PageSaveProcess />} />
+                    </>
+                }
             </Route>
             <Route path="*" element={<PageNotFound />} />
         </Routes>
