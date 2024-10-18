@@ -20,6 +20,7 @@ export const PageAccountDoctor = lazy(() => import("@/pages/account_doctor"));
 export const PageFaceAuth = lazy(() => import("@/pages/face_auth"));
 export const PageFaceLogin = lazy(() => import("@/pages/face_login"));
 export const PageSaveProcess = lazy(() => import("@/pages/save_process"));
+export const PageLogCheck = lazy(() => import("@/pages/log_check"));
 
 // other
 export const PageNotFound = lazy(() => import("@/pages/not_found"));

@@ -13,6 +13,7 @@ import {
     PageField,
     PageFieldDetail,
     PageHome,
+    PageLogCheck,
     PageLogin,
     PageNotFound,
     PageResult,
@@ -62,6 +63,7 @@ const AppRouter: React.FC = () => {
                             <Route path={ROUTER.FIELD.href} element={<PageField />} />
                             <Route path={ROUTER.FIELD_DETAIL.href} element={<PageFieldDetail />} />
                             <Route path={ROUTER.ACCOUNT_DOCTOR.href} element={<PageAccountDoctor />} />
+                            <Route path={ROUTER.LOG_CHECK.href} element={<PageLogCheck />} />
                         </>
                     }
 

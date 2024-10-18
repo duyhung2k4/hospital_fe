@@ -27,6 +27,7 @@ export type TableCRUDProps = {
     isOption?: boolean
     isAction?: boolean
     options?: ((values: Record<string, any>) => React.ReactNode)[]
+    defaultAction?: boolean
 }
 
 const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
@@ -68,60 +69,65 @@ const TableCRUD = forwardRef<any, TableCRUDProps>((props, ref) => {
                     Cell: (propsCell) => {
                         return (
                             <Group style={{ cursor: "pointer" }}>
-                                <Tooltip label="Xóa">
-                                    <IconTrash
-                                        color="red"
-                                        onClick={() => {
-                                            const item = propsCell.cell.row.original;
-                                            if (!item?.ID) return;
+                                {
+                                    props.defaultAction === false ? <></> :
+                                        <>
+                                            <Tooltip label="Xóa">
+                                                <IconTrash
+                                                    color="red"
+                                                    onClick={() => {
+                                                        const item = propsCell.cell.row.original;
+                                                        if (!item?.ID) return;
 
-                                            OpenModalConfirm({
-                                                title: "Xác nhận xóa",
-                                                text: <>Bạn thật sự muốn xóa dữ liệu</>,
-                                                idForm: "delete-department",
-                                                cb: () => handleDelete(item.ID as number)
-                                            });
-                                        }}
-                                    />
-                                </Tooltip>
-                                <Tooltip label="Chỉnh sửa">
-                                    <IconPencilMinus
-                                        color="blue"
-                                        onClick={() => {
-                                            const item = propsCell.cell.row.original;
-                                            if (!item?.ID) return;
-                                            fields.forEach((f) => {
-                                                switch (f.type) {
-                                                    case "tag":
-                                                        f.data = {
-                                                            ...f.data,
-                                                            defaultValue: item[f.name] || []
-                                                        }
-                                                        break;
-                                                    case "date":
-                                                        f.data = {
-                                                            ...f.data,
-                                                            defaultValue: item[f.name] ? dayjs(item[f.name]).toDate() : null
-                                                        }
-                                                        break;
-                                                    default:
-                                                        f.data = {
-                                                            ...f.data,
-                                                            defaultValue: item[f.name],
-                                                        }
-                                                        break;
-                                                }
-                                            })
+                                                        OpenModalConfirm({
+                                                            title: "Xác nhận xóa",
+                                                            text: <>Bạn thật sự muốn xóa dữ liệu</>,
+                                                            idForm: "delete-department",
+                                                            cb: () => handleDelete(item.ID as number)
+                                                        });
+                                                    }}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip label="Chỉnh sửa">
+                                                <IconPencilMinus
+                                                    color="blue"
+                                                    onClick={() => {
+                                                        const item = propsCell.cell.row.original;
+                                                        if (!item?.ID) return;
+                                                        fields.forEach((f) => {
+                                                            switch (f.type) {
+                                                                case "tag":
+                                                                    f.data = {
+                                                                        ...f.data,
+                                                                        defaultValue: item[f.name] || []
+                                                                    }
+                                                                    break;
+                                                                case "date":
+                                                                    f.data = {
+                                                                        ...f.data,
+                                                                        defaultValue: item[f.name] ? dayjs(item[f.name]).toDate() : null
+                                                                    }
+                                                                    break;
+                                                                default:
+                                                                    f.data = {
+                                                                        ...f.data,
+                                                                        defaultValue: item[f.name],
+                                                                    }
+                                                                    break;
+                                                            }
+                                                        })
 
-                                            OpenModalAction({
-                                                title: "Chỉnh sửa",
-                                                fields: fields.filter(f => f.isField !== false),
-                                                idForm: "update-department",
-                                                cb: (values) => handleUpdate(item.ID as number, values)
-                                            });
-                                        }}
-                                    />
-                                </Tooltip>
+                                                        OpenModalAction({
+                                                            title: "Chỉnh sửa",
+                                                            fields: fields.filter(f => f.isField !== false),
+                                                            idForm: "update-department",
+                                                            cb: (values) => handleUpdate(item.ID as number, values)
+                                                        });
+                                                    }}
+                                                />
+                                            </Tooltip>
+                                        </>
+                                }
                                 {
                                     props.options?.map((p, i) => (
                                         <React.Fragment key={i}>

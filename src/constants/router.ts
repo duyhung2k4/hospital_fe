@@ -11,7 +11,8 @@ import {
     IconUserCog,
     IconThermometer,
     IconReport,
-    IconUserPlus
+    IconUserPlus,
+    IconCopyCheck
 } from "@tabler/icons-react"
 
 export type ObjectRouter = {
@@ -39,6 +40,7 @@ export type FieldRouter =
     | "SAVE_PROCESS"
     | "FACE_AUTH"
     | "FACE_LOGIN"
+    | "LOG_CHECK"
 export const ROUTER: Record<FieldRouter, ObjectRouter> = {
     HOME: {
         href: "/",
@@ -131,4 +133,10 @@ export const ROUTER: Record<FieldRouter, ObjectRouter> = {
         href: "/face-login",
         type: "protected",
     },
+    LOG_CHECK: {
+        href: "/log-check",
+        type: "protected",
+        name: "Kết quả dự đoán",
+        icon: IconCopyCheck,
+    }
 }
