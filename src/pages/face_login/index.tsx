@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 
 import { TOKEN_TYPE } from "@/model/variable";
 import { Stack } from "@mantine/core";
-import { useNavigate } from "react-router";
 import { useCreateSocketAuthFaceMutation, useFaceLoginMutation } from "@/redux/api/auth";
 
 
@@ -11,8 +10,6 @@ import { useCreateSocketAuthFaceMutation, useFaceLoginMutation } from "@/redux/a
 const FaceAuth: React.FC = () => {
     const [ws, setWs] = useState<WebSocket | null>(null);
     const [_, setLoad] = useState<boolean>(false);
-
-    const navigation = useNavigate();
 
     const uuid = Cookies.get(TOKEN_TYPE.SOCKET_AUTH);
     const [post] = useFaceLoginMutation();
