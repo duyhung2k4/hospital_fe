@@ -35,7 +35,6 @@ const AppshellLayout: React.FC = () => {
                 ROUTER.ACCOUNT_DOCTOR,
                 ROUTER.SCHEDULE,
                 ROUTER.FIELD,
-                ROUTER.LOG_CHECK,
             )
         }
 
